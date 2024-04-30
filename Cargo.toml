@@ -1,0 +1,25 @@
+[package]
+name = "csidh"
+version = "0.1.0"
+authors = ["Titouan Real <titouan.real@gmail.com>"]
+edition = "2021"
+rust-version = "1.76"
+description = """
+Pure Rust implementation of of the CSIDH cryptographic algorithm for secret key exchange. Provides a (not yet) constant-time, no_std-friendly implementation.
+"""
+repository = "https://github.com/TitouanReal/csidh"
+license = "Apache-2.0 OR MIT"
+keywords = ["crypto", "elliptic-curve", "isogeny", "csidh", "quantum"]
+categories = ["cryptography", "no-std"]
+
+[dependencies]
+const-primes = "0.4"
+crypto-bigint = { version = "0.6.0-pre.12", default-features = false }
+# TODO Use rand_chacha
+oorandom = "11"
+
+[features]
+no_cm_velu = []
+no_cm_order = []
+no_cm_p_plus_1_over_4 = []
+no_cm = ["no_cm_velu", "no_cm_p_plus_1_over_4", "no_cm_order"]
