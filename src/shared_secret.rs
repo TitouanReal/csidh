@@ -20,19 +20,14 @@ pub struct SharedSecret {
 }
 
 impl SharedSecret {
-    /// Creates a shared secret from a foreign public key and a private key if the foreign public key is valid.
-    pub fn from<const N: usize>(
-        foreign_public_key: PublicKey,
-        private_key: PrivateKey<N>,
-    ) -> Option<Self> {
-        if !CsidhEllipticCurve::new(private_key.params().clone(), foreign_public_key.key())
-            .is_supersingular()
-        {
-            None
-        } else {
-            Some(SharedSecret {
-                shared_secret: csidh(private_key.params(), private_key.key(), foreign_public_key.key()),
-            })
+    /// Creates a shared secret from a foreign public key and a private key.
+    pub fn from<const N: usize>(foreign_public_key: PublicKey, private_key: PrivateKey<N>) -> Self {
+        SharedSecret {
+            shared_secret: csidh(
+                private_key.params(),
+                private_key.key(),
+                foreign_public_key.key(),
+            ),
         }
     }
 }

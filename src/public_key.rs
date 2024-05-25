@@ -32,10 +32,13 @@ impl PublicKey {
     }
 
     // TODO Create API not dependant on Uint - LIMBS must be transparent to the user
-    /// Creates the public key received from the other side.
-    pub fn new(params: CsidhParams<LIMBS>, key: Uint<LIMBS>) -> Self {
-        PublicKey {
-            key: MontyForm::new(&key, params.p()),
+    /// Constructs a `PublicKey` from the foreign public key, if the key is valid.
+    pub fn new(params: CsidhParams<LIMBS>, key: Uint<LIMBS>) -> Option<Self> {
+        let key = MontyForm::new(&key, params.p());
+        if !CsidhEllipticCurve::new(params, key).is_supersingular() {
+            None
+        } else {
+            Some(PublicKey { key })
         }
     }
 
