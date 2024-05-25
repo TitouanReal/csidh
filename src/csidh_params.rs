@@ -9,7 +9,7 @@ use crypto_bigint::modular::MontyParams;
 use crypto_bigint::{impl_modulus, Uint};
 
 /// Parameters of the CSIDH key exchange.
-#[derive(Debug, Clone, PartialEq, Copy)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct CsidhParams<const N: usize> {
     // TODO make struct prime to leverage the type system better - Wait for const_unwrap
     lis: [u64; N],

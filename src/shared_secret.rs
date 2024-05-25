@@ -14,7 +14,7 @@ const LIMBS: usize = 16;
 const LIMBS: usize = 8;
 
 /// A shared secret created with the CSIDH key exchange.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct SharedSecret {
     shared_secret: MontyForm<LIMBS>,
 }

@@ -11,7 +11,7 @@ const LIMBS: usize = 16;
 #[cfg(target_pointer_width = "64")]
 const LIMBS: usize = 8;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct Point<const N: usize> {
     // TODO keep only reference?
     curve: CsidhEllipticCurve<N>,
@@ -20,7 +20,7 @@ pub struct Point<const N: usize> {
     proj_z: MontyForm<LIMBS>,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct CsidhEllipticCurve<const N: usize> {
     params: CsidhParams<N>,
     a2: MontyForm<LIMBS>,

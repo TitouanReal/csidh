@@ -14,7 +14,7 @@ const LIMBS: usize = 16;
 const LIMBS: usize = 8;
 
 /// A public key for the CSIDH key exchange.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct PublicKey {
     key: MontyForm<LIMBS>,
 }

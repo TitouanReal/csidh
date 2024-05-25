@@ -3,7 +3,7 @@ use crate::csidh_params::CsidhParams;
 use core::fmt::{self, Display};
 
 /// A private key for the CSIDH key exchange.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct PrivateKey<const N: usize> {
     params: CsidhParams<N>,
     key: [i32; N],
