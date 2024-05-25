@@ -20,7 +20,7 @@ pub struct PublicKey {
 }
 
 impl PublicKey {
-    /// Creates the public key associated with the given private key.
+    /// Computes the public key associated with the given private key.
     pub fn associated_with<const N: usize>(private_key: PrivateKey<N>) -> Self {
         PublicKey {
             key: csidh(

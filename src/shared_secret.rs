@@ -20,7 +20,7 @@ pub struct SharedSecret {
 }
 
 impl SharedSecret {
-    /// Creates a shared secret from a foreign public key and a private key.
+    /// Computes a shared secret from a foreign public key and a private key.
     pub fn from<const N: usize>(foreign_public_key: PublicKey, private_key: PrivateKey<N>) -> Self {
         SharedSecret {
             shared_secret: csidh(
