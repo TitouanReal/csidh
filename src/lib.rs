@@ -24,7 +24,7 @@
 //!     5, 5, 5, 3, 0, 9, 6, 9, 8, 5, 5, 9, 2, 0, 3, 6,
 //! ];
 //! let alice_private_key = PrivateKey::new(params, alice_path);
-//! let alice_public_key = PublicKey::associated_with(alice_private_key);
+//! let alice_public_key = PublicKey::from(alice_private_key);
 //!
 //! // Bob
 //! let bob_path = [
@@ -33,7 +33,7 @@
 //!     1, 4, 8, 10, 6, 0, 7, 1, 2, 7, 2, 0, 9, 9, 0, 6,
 //! ];
 //! let bob_private_key = PrivateKey::new(params, bob_path);
-//! let bob_public_key = PublicKey::associated_with(bob_private_key);
+//! let bob_public_key = PublicKey::from(bob_private_key);
 //!
 //! // Shared secret
 //! let alice_shared_secret = SharedSecret::from(bob_public_key, alice_private_key);

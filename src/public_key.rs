@@ -21,7 +21,7 @@ pub struct PublicKey {
 
 impl PublicKey {
     /// Computes the public key associated with the given private key.
-    pub fn associated_with<const N: usize>(private_key: PrivateKey<N>) -> Self {
+    pub fn from<const N: usize>(private_key: PrivateKey<N>) -> Self {
         PublicKey {
             key: csidh(
                 private_key.params().clone(),
