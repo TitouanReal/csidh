@@ -24,7 +24,7 @@ impl PublicKey {
     pub fn from<const N: usize>(private_key: PrivateKey<N>) -> Self {
         PublicKey {
             key: csidh(
-                private_key.params().clone(),
+                private_key.params(),
                 private_key.key(),
                 MontyForm::zero(private_key.params().p()),
             ),

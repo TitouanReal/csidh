@@ -16,11 +16,11 @@ pub fn csidh<const N: usize>(
 ) -> MontyForm<LIMBS> {
     let p = params.p();
     let lis = params.lis();
-    let mut e = CsidhEllipticCurve::new(params.clone(), start);
+    let mut e = CsidhEllipticCurve::new(params, start);
 
     let mut rand = Rand64::new(454_621u128);
     while !path.into_iter().all(|x| x == 0) {
-        let x = MontyForm::new(&Uint::from(rand.rand_u64()), p.clone());
+        let x = MontyForm::new(&Uint::from(rand.rand_u64()), p);
 
         let mut k = Uint::from(4u32);
 
@@ -47,20 +47,20 @@ pub fn csidh<const N: usize>(
                 let point_k = point_p * m;
 
                 if !point_k.is_infinity() {
-                    let mut temp = point_k.clone();
-                    let mut tau = MontyForm::one(p.clone());
-                    let mut sigma = MontyForm::zero(p.clone());
+                    let mut temp = point_k;
+                    let mut tau = MontyForm::one(p);
+                    let mut sigma = MontyForm::zero(p);
 
                     for _ in 1..*li {
                         let x = temp.x().unwrap();
-                        tau = tau * x;
+                        tau *= x;
                         sigma = sigma + x - x.inv().unwrap();
-                        temp = temp + point_k.clone();
+                        temp = temp + point_k;
                     }
 
-                    let three = MontyForm::new(&Uint::from(3u32), p.clone());
+                    let three = MontyForm::new(&Uint::from(3u32), p);
                     let b = tau * (e.a2() - sigma * three);
-                    e = CsidhEllipticCurve::new(params.clone(), b);
+                    e = CsidhEllipticCurve::new(params, b);
                     path[i] -= 1;
 
                     break;

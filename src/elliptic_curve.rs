@@ -60,7 +60,7 @@ impl<const N: usize> Point<N> {
     // TODO make those functions return read references and/or make them const
 
     pub fn x(&self) -> Option<MontyForm<LIMBS>> {
-        if self == &Point::infinity(self.curve.clone()) {
+        if self == &Point::infinity(self.curve) {
             None
         } else {
             Some(self.proj_x * self.proj_z.inv().unwrap())
@@ -68,7 +68,7 @@ impl<const N: usize> Point<N> {
     }
 
     pub fn y(&self) -> Option<MontyForm<LIMBS>> {
-        if self == &Point::infinity(self.curve.clone()) {
+        if self == &Point::infinity(self.curve) {
             None
         } else {
             Some(self.proj_y * self.proj_z.inv().unwrap())
@@ -101,13 +101,13 @@ impl<const N: usize> Add for Point<N> {
         let p = &self.curve.field_characteristic();
 
         if x1 == x2 && y1 == -y2 {
-            return Point::infinity(self.curve.clone());
+            return Point::infinity(self.curve);
         }
 
         let a2 = &self.curve.a2;
-        let one = MontyForm::one(p.clone());
-        let two = MontyForm::new(&Uint::from(2u32), p.clone());
-        let three = MontyForm::new(&Uint::from(3u32), p.clone());
+        let one = MontyForm::one(*p);
+        let two = MontyForm::new(&Uint::from(2u32), *p);
+        let three = MontyForm::new(&Uint::from(3u32), *p);
 
         if x1 == x2 && y1 == y2 {
             let lambda_top = three * x1.square() + two * a2 * x1 + one;
@@ -135,7 +135,7 @@ impl<const N: usize> Add for Point<N> {
             y3 = y3_plus - y3_minus;
         }
 
-        Point::new_aff(self.curve.clone(), x3, y3)
+        Point::new_aff(self.curve, x3, y3)
     }
 }
 
@@ -151,16 +151,16 @@ impl<const N: usize> Mul<Uint<LIMBS>> for Point<N> {
     type Output = Self;
 
     fn mul(self, other: Uint<LIMBS>) -> Self {
-        let mut r = self.clone();
-        let mut s = Point::infinity(self.curve.clone());
+        let mut r = self;
+        let mut s = Point::infinity(self.curve);
         for index in 0..other.bits() {
             let bit = other.bit(other.bits() - index - 1);
             if bit == ConstChoice::TRUE {
-                s = s + r.clone();
-                r = r.clone() + r;
+                s = s + r;
+                r = r + r;
             } else {
-                r = r + s.clone();
-                s = s.clone() + s;
+                r = r + s;
+                s = s + s;
             }
         }
 
@@ -175,12 +175,7 @@ impl<const N: usize> PartialEq for Point<N> {
             true
         } else if self.proj_z == zero || other.proj_z == zero {
             false
-        } else if self.x().unwrap() == other.x().unwrap() && self.y().unwrap() == other.y().unwrap()
-        {
-            true
-        } else {
-            false
-        }
+        } else {self.x().unwrap() == other.x().unwrap() && self.y().unwrap() == other.y().unwrap()}
     }
 }
 
@@ -206,7 +201,7 @@ impl<const N: usize> CsidhEllipticCurve<N> {
         let r = n.pow(&self.params.lis_product());
 
         if r.square() == n {
-            Some(Point::new_aff(self.clone(), x, r))
+            Some(Point::new_aff(*self, x, r))
         } else {
             None
         }
@@ -238,8 +233,8 @@ impl<const N: usize> CsidhEllipticCurve<N> {
                 }
             }
 
-            let qi = point.clone() * value;
-            if (qi.clone() * li).is_infinity() {
+            let qi = point * value;
+            if (qi * li).is_infinity() {
                 return false;
             }
             if qi.is_infinity() {
