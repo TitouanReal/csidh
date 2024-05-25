@@ -4,55 +4,36 @@ const LIMBS: usize = 16;
 #[cfg(target_pointer_width = "64")]
 const LIMBS: usize = 8;
 
-use const_primes::is_prime;
 use crypto_bigint::modular::MontyParams;
 use crypto_bigint::{impl_modulus, Uint};
 
 /// Parameters of the CSIDH key exchange.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct CsidhParams<const N: usize> {
-    // TODO make struct prime to leverage the type system better - Wait for const_unwrap
     lis: [u64; N],
     lis_product: Uint<LIMBS>,
     p: MontyParams<LIMBS>,
 }
 
-impl_modulus!(ModEx0, Uint<LIMBS>, "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001a3");
-
-impl CsidhParams<3> {
-    /// Example 0 of CSIDH params
-    pub const EXAMPLE_0: CsidhParams<3> = CsidhParams::new_no_verif(
-        [3, 5, 7],
-        Uint::from_be_hex("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000069"),
-        MontyParams::from_const_params::<ModEx0>(),
-    );
-}
-
-impl_modulus!(ModEx1, Uint<LIMBS>, "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000051398abd3fbcbfe788035a7f23");
-
-impl CsidhParams<21> {
-    /// Example 1 of CSIDH params
-    pub const EXAMPLE_1: CsidhParams<21> = CsidhParams::new_no_verif(
-        [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79],
-        Uint::from_be_hex("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000144e62af4fef2ff9e200d69fc9"),
-        MontyParams::from_const_params::<ModEx1>(),
-    );
-}
-
 impl_modulus!(PrimeCsidh512, Uint<LIMBS>, "65b48e8f740f89bffc8ab0d15e3e4c4ab42d083aedc88c425afbfcc69322c9cda7aac6c567f35507516730cc1f0b4f25c2721bf457aca8351b81b90533c6c87b");
 
 impl CsidhParams<74> {
-    /// CSIDH-512 as defined in Castryck, W., Lange, T., Martindale, C., Panny, L., Renes, J.: CSIDH: An efficient post-quantum commutative group action. In: Peyrin, T., Galbraith, S. (eds.) ASIACRYPT 2018, LNCS 11274. pp. 395–427. Springer (2018)
-    pub const CSIDH_512: CsidhParams<74> = CsidhParams::new_no_verif(
-        [
+    /// CSIDH-512 as defined in <i>
+    /// <a href=https://csidh.isogeny.org/csidh-20181118.pdf>
+    /// [Castryck, W., Lange, T., Martindale, C., Panny, L., Renes, J.:
+    /// CSIDH: An efficient post-quantum commutative group action. In: Peyrin, T., Galbraith, S.
+    /// (eds.) ASIACRYPT 2018, LNCS 11274. pp. 395–427. Springer (2018)]
+    /// </a></i>.
+    pub const CSIDH_512: CsidhParams<74> = CsidhParams {
+        lis: [
             3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83,
             89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179,
             181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271,
             277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 587
         ],
-        Uint::from_be_hex("196d23a3dd03e26fff22ac34578f9312ad0b420ebb72231096beff31a4c8b27369eab1b159fcd541d459cc3307c2d3c9709c86fd15eb2a0d46e06e414cf1b21f"),
-        MontyParams::from_const_params::<PrimeCsidh512>(),
-    );
+        lis_product: Uint::from_be_hex("196d23a3dd03e26fff22ac34578f9312ad0b420ebb72231096beff31a4c8b27369eab1b159fcd541d459cc3307c2d3c9709c86fd15eb2a0d46e06e414cf1b21f"),
+        p: MontyParams::from_const_params::<PrimeCsidh512>(),
+    };
 }
 
 // TODO Enable once variable number of limbs enabled
@@ -103,57 +84,15 @@ impl CsidhParams<74> {
 // }
 
 impl<const N: usize> CsidhParams<N> {
-    /// Creates CSIDH parameters for the given numbers. The given numbers are checked for primality. P is not checked.
-    pub const fn new(
-        lis: [u64; N],
-        lis_product: Uint<LIMBS>,
-        p: MontyParams<LIMBS>,
-    ) -> Option<Self> {
-        // TODO use for loop once "const_for" is stabilized
-        let mut i = 0;
-        while i < N {
-            if !is_prime(lis[i]) {
-                return None;
-            }
-            i += 1;
-        }
-        // TODO calculate lis_product and p at compile time instead of taking them as parameters
-        // TODO primality check on p once possible in const context for crypto-bigint::Uint
-        Some(CsidhParams {
-            lis,
-            lis_product,
-            p,
-        })
-    }
-
-    /// Creates CSIDH parameters for the given numbers. The given numbers are not checked for primality. P is not checked.
-    // Todo this will be removed once const_unwrap is added
-    pub const fn new_no_verif(
-        lis: [u64; N],
-        lis_product: Uint<LIMBS>,
-        p: MontyParams<LIMBS>,
-    ) -> Self {
-        CsidhParams {
-            lis,
-            lis_product,
-            p,
-        }
-    }
-
-    // TODO make those functions return read references, then make them const
-
-    /// Return the primes of these parameters
-    pub const fn lis(self) -> [u64; N] {
+    pub(crate) const fn lis(self) -> [u64; N] {
         self.lis
     }
 
-    /// Return the primes product of these parameters
-    pub const fn lis_product(self) -> Uint<LIMBS> {
+    pub(crate) const fn lis_product(self) -> Uint<LIMBS> {
         self.lis_product
     }
 
-    /// Return the prime modulo of these parameters
-    pub const fn p(self) -> MontyParams<LIMBS> {
+    pub(crate) const fn p(self) -> MontyParams<LIMBS> {
         self.p
     }
 }
