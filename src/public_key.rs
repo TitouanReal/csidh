@@ -39,8 +39,7 @@ impl PublicKey {
         }
     }
 
-    /// Returns the inner value of the key
-    pub const fn key(&self) -> MontyForm<LIMBS> {
+    pub(crate) const fn key(&self) -> MontyForm<LIMBS> {
         self.key
     }
 }

@@ -26,16 +26,12 @@ pub struct CsidhEllipticCurve<const N: usize> {
     a2: MontyForm<LIMBS>,
 }
 
-#[derive(Debug, Clone, PartialEq)]
-struct TwistedEdwardianCurve<const N: usize> {
-    field_characteristic: Uint<LIMBS>,
-    a: Uint<LIMBS>,
-    d: Uint<LIMBS>,
-}
-
 impl<const N: usize> Point<N> {
-    // TODO make those functions const
-    fn new_aff(curve: CsidhEllipticCurve<N>, x: MontyForm<LIMBS>, y: MontyForm<LIMBS>) -> Self {
+    const fn new_aff(
+        curve: CsidhEllipticCurve<N>,
+        x: MontyForm<LIMBS>,
+        y: MontyForm<LIMBS>,
+    ) -> Self {
         let p = curve.field_characteristic();
         Point {
             curve,
@@ -45,7 +41,7 @@ impl<const N: usize> Point<N> {
         }
     }
 
-    fn infinity(curve: CsidhEllipticCurve<N>) -> Self {
+    const fn infinity(curve: CsidhEllipticCurve<N>) -> Self {
         let p = curve.field_characteristic();
         Point {
             curve,
@@ -55,8 +51,8 @@ impl<const N: usize> Point<N> {
         }
     }
 
-    fn is_infinity(&self) -> bool {
-        return self.proj_z == MontyForm::zero(self.curve.field_characteristic())
+    pub fn is_infinity(&self) -> bool {
+        self.proj_z == MontyForm::zero(self.curve.field_characteristic())
     }
 
     // TODO make those functions return read references and/or make them const
@@ -75,43 +71,6 @@ impl<const N: usize> Point<N> {
         } else {
             Some(self.proj_y * self.proj_z.inv().unwrap())
         }
-    }
-
-    pub fn order(&self) -> Uint<LIMBS> {
-        let mut order = self.curve.field_characteristic().modulus().get() + Uint::ONE;
-
-        for li in self.curve.params.lis().into_iter() {
-            let new_order = order.div_rem(&NonZero::new(Uint::from(li)).unwrap()).0;
-
-            if (self.clone() * new_order).is_infinity() {
-                order = new_order;
-            }
-        }
-
-        let order_over_4 = order.div_rem(&NonZero::new(Uint::from(4u32)).unwrap()).0;
-        let order_over_2 = order.div_rem(&NonZero::new(Uint::from(2u32)).unwrap()).0;
-
-        if (self.clone() * order_over_4).is_infinity() {
-            order = order_over_4;
-        } else if (self.clone() * order_over_2).is_infinity() {
-            order = order_over_2;
-        }
-
-        order
-    }
-
-    pub fn order_not_multiple_of_2(&self) -> Uint<LIMBS> {
-        let mut order = self.curve.params.lis_product();
-
-        for li in self.curve.params.lis().into_iter() {
-            let new_order = order.div_rem(&NonZero::new(Uint::from(li)).unwrap()).0;
-
-            if (self.clone() * new_order).is_infinity() {
-                order = new_order;
-            }
-        }
-
-        order
     }
 }
 
@@ -224,15 +183,15 @@ impl<const N: usize> PartialEq for Point<N> {
 }
 
 impl<const N: usize> CsidhEllipticCurve<N> {
-    pub fn field_characteristic(&self) -> MontyParams<LIMBS> {
+    pub const fn field_characteristic(&self) -> MontyParams<LIMBS> {
         self.params.p()
     }
 
-    pub fn a2(&self) -> MontyForm<LIMBS> {
-        self.a2.clone()
+    pub const fn a2(&self) -> MontyForm<LIMBS> {
+        self.a2
     }
 
-    pub fn new(params: CsidhParams<N>, a: MontyForm<LIMBS>) -> Self {
+    pub const fn new(params: CsidhParams<N>, a: MontyForm<LIMBS>) -> Self {
         CsidhEllipticCurve { a2: a, params }
     }
 

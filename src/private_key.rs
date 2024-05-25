@@ -23,13 +23,11 @@ impl<const N: usize> PrivateKey<N> {
         PrivateKey { params, key }
     }
 
-    /// Returns the inner params of the key
-    pub const fn params(&self) -> CsidhParams<N> {
+    pub(crate) const fn params(&self) -> CsidhParams<N> {
         self.params
     }
 
-    /// Returns the inner value of the key
-    pub const fn key(&self) -> [i32; N] {
+    pub(crate) const fn key(&self) -> [u32; N] {
         self.key
     }
 }
