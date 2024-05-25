@@ -1,8 +1,6 @@
-use crate::elliptic_curve::CsidhEllipticCurve;
-use crate::csidh_params::CsidhParams;
+use crate::{csidh_params::CsidhParams, elliptic_curve::CsidhEllipticCurve};
 
-use crypto_bigint::modular::MontyForm;
-use crypto_bigint::{NonZero, Uint};
+use crypto_bigint::{modular::MontyForm, Uint};
 use oorandom::Rand64;
 
 // TODO Make LIMBS auto-calculated depending on chosen params

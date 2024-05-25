@@ -1,9 +1,11 @@
-use crate::csidh_params::CsidhParams;
-
 use core::ops::{Add, Mul};
 
-use crypto_bigint::modular::{MontyForm, MontyParams};
-use crypto_bigint::{ConstChoice, NonZero, Uint};
+use crate::csidh_params::CsidhParams;
+
+use crypto_bigint::{
+    modular::{MontyForm, MontyParams},
+    ConstChoice, Uint,
+};
 use oorandom::Rand64;
 
 #[cfg(target_pointer_width = "32")]

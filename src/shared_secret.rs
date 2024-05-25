@@ -1,9 +1,6 @@
-use crate::elliptic_curve::CsidhEllipticCurve;
-use crate::csidh::csidh;
-use crate::public_key::PublicKey;
-use crate::private_key::PrivateKey;
-
 use core::fmt::{self, Display};
+
+use crate::{csidh::csidh, private_key::PrivateKey, public_key::PublicKey};
 
 use crypto_bigint::modular::MontyForm;
 

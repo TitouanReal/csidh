@@ -44,14 +44,14 @@
 #![no_std]
 #![warn(missing_docs)]
 
+mod csidh;
 mod csidh_params;
+mod elliptic_curve;
 mod private_key;
 mod public_key;
 mod shared_secret;
-mod csidh;
-mod elliptic_curve;
 
 pub use csidh_params::CsidhParams;
-pub use public_key::PublicKey;
 pub use private_key::PrivateKey;
+pub use public_key::PublicKey;
 pub use shared_secret::SharedSecret;

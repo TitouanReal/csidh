@@ -1,6 +1,6 @@
-use crate::csidh_params::CsidhParams;
-
 use core::fmt::{self, Display};
+
+use crate::csidh_params::CsidhParams;
 
 /// A private key for the CSIDH key exchange.
 #[derive(Clone, Copy, Debug, PartialEq)]

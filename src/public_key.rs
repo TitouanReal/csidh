@@ -1,11 +1,11 @@
-use crate::csidh_params::CsidhParams;
-use crate::private_key::PrivateKey;
-use crate::csidh::csidh;
-
 use core::fmt::{self, Display};
 
-use crypto_bigint::modular::MontyForm;
-use crypto_bigint::Uint;
+use crate::{
+    csidh::csidh, csidh_params::CsidhParams, elliptic_curve::CsidhEllipticCurve,
+    private_key::PrivateKey,
+};
+
+use crypto_bigint::{modular::MontyForm, Uint};
 
 // TODO Make LIMBS auto-calculated depending on chosen params
 #[cfg(target_pointer_width = "32")]

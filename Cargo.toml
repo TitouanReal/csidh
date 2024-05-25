@@ -12,7 +12,6 @@ keywords = ["crypto", "elliptic-curve", "isogeny", "csidh", "quantum"]
 categories = ["cryptography", "no-std"]
 
 [dependencies]
-const-primes = "0.4"
 crypto-bigint = { version = "0.6.0-pre.12", default-features = false }
 # TODO Use rand_chacha
 oorandom = "11"

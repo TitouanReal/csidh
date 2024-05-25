@@ -4,8 +4,7 @@ const LIMBS: usize = 16;
 #[cfg(target_pointer_width = "64")]
 const LIMBS: usize = 8;
 
-use crypto_bigint::modular::MontyParams;
-use crypto_bigint::{impl_modulus, Uint};
+use crypto_bigint::{impl_modulus, modular::MontyParams, Uint};
 
 /// Parameters of the CSIDH key exchange.
 #[derive(Clone, Copy, Debug, PartialEq)]
