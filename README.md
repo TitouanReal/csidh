@@ -1,5 +1,8 @@
 # CSIDH
 
+[![Crate](https://img.shields.io/crates/v/csidh.svg)](https://crates.io/crates/csidh)
+[![API](https://docs.rs/csidh/badge.svg)](https://docs.rs/csidh)
+
 Pure Rust implementation of the CSIDH cryptographic algorithm for secret key exchange.
 Provides a no_std-friendly implementation. Not constant-time yet.
 
