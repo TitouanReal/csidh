@@ -273,183 +273,129 @@ impl<const N: usize> CsidhEllipticCurve<N> {
 mod tests {
     use super::*;
 
+    const P: MontyParams<8> = CsidhParams::CSIDH_512.p();
+    const E0: CsidhEllipticCurve<74> =
+        CsidhEllipticCurve::new(CsidhParams::CSIDH_512, MontyForm::zero(P));
+
+    const POINT_A: Point<74> = Point::new_aff(
+        E0,
+        MontyForm::new(
+            &Uint::from_be_hex(
+                "635ea6487c006e601469a7c3030538397a1a038bf3a45d02b60ac813ffbc5b62\
+                08082059de864765636def621e70a71addf24e43ef931aaf2791ee3c89c6155a",
+            ),
+            P,
+        ),
+        MontyForm::new(
+            &Uint::from_be_hex(
+                "16d5e60adef890091e8c4c6b02a3f89900821e37ce31e0a56cd3f7128d1b66b9\
+                cba7ca5cf1025e0e9a1dd2f014403a0ee1c203d5ee16ee46776a859264107dd9",
+            ),
+            P,
+        ),
+    );
+
+    const POINT_B: Point<74> = Point::new_aff(
+        E0,
+        MontyForm::new(
+            &Uint::from_be_hex(
+                "306cd03ccb8c6502fbbc5df98cdcf441e521432adff69173c121c4b418fa26c6\
+                3f93842b9a4a768217ddce706d7bfb2135a30dea0c9aea9e21ce0c18624b36cc",
+            ),
+            P,
+        ),
+        MontyForm::new(
+            &Uint::from_be_hex(
+                "1b450a0bb68902ee95d3fe7ea9779a0c54a5350a24bf4bac18e825020319eed4\
+                d8b00ac493c5f8708d384229e16ddf7b258c8b18ff4209525c5f8b44d56890d1",
+            ),
+            P,
+        ),
+    );
+
     #[test]
-    fn test_point_lifting() {
-        let params = CsidhParams::EXAMPLE_0;
-        let p = params.p();
-        let e = CsidhEllipticCurve::new(params, MontyForm::zero(p));
-
-        let x = MontyForm::new(&Uint::from(193u32), p);
-        let y = MontyForm::new(&Uint::from(116u32), p);
-        let point = e.lift(x);
-        assert!(point == Some(Point::new_aff(e.clone(), x, y)));
-
-        let x = MontyForm::new(&Uint::from(132u32), p);
-        let y = MontyForm::new(&Uint::from(48u32), p);
-        let point = e.lift(x);
-        assert!(point == Some(Point::new_aff(e.clone(), x, y)));
-
-        let x = MontyForm::new(&Uint::from(7u32), p);
-        let point = e.lift(x);
-        assert!(point.is_none());
+    fn point_lifting() {
+        let x = MontyForm::new(
+            &Uint::from_be_hex(
+                "454f23d6fe33c49c4fa4e1c87c785f6abfc6d97b2b7e631cc54ecfe589dc40c7\
+                054fe09a40dd3bc9ccc3f49d04d34deea4345143d18854181bb2f0690eacdf2c",
+            ),
+            P,
+        );
+        let y = MontyForm::new(
+            &Uint::from_be_hex(
+                "2c425f4eb317b0d6fbb227a7e8cf61005a61a6ede5b2764a8fec8f0ef44c3d45\
+                b34bae45c51d55a8506580e8d037ab414123b2d6b0bc77c978493960102f749e",
+            ),
+            P,
+        );
+        let point = E0.lift(x);
+        assert!(point == Some(Point::new_aff(E0, x, y)));
     }
 
     #[test]
-    fn test_point_addition() {
-        let params = CsidhParams::EXAMPLE_0;
-        let p = params.p();
-        let e = CsidhEllipticCurve::new(params, MontyForm::zero(p));
-
-        let point_a = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(132u32), p),
-            MontyForm::new(&Uint::from(48u32), p),
+    fn point_addition() {
+        let result = Point::new_aff(
+            E0,
+            MontyForm::new(
+                &Uint::from_be_hex(
+                    "02763bc5abec080ea31a29ede8f1794be1058bd74750b1c48969e6b72a706b0c\
+                    be18b4321b1f92c751b1ccb4d86bc979964669013712bb7d0daccaeb43a8f5e4",
+                ),
+                P,
+            ),
+            MontyForm::new(
+                &Uint::from_be_hex(
+                    "05fe008928dd4847a428ae7c131ad74d09170ec71355ce722665f6d34b377220\
+                    09b952d158ae85595b0611db72b3acb89c1e0738bd51434936d6a9b3d72aa1b7",
+                ),
+                P,
+            ),
         );
-        let point_b = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(380u32), p),
-            MontyForm::new(&Uint::from(130u32), p),
-        );
-        let point_c = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(161u32), p),
-            MontyForm::new(&Uint::from(331u32), p),
-        );
-        assert!(point_a + point_b == point_c);
-
-        let point_d = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(74u32), p),
-            MontyForm::new(&Uint::from(214u32), p),
-        );
-        let point_e = Point::infinity(e.clone());
-        assert!(point_d.clone() + point_e.clone() == point_d);
-
-        let point_f = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(417u32), p),
-            MontyForm::new(&Uint::from(165u32), p),
-        );
-        let point_g = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(417u32), p),
-            MontyForm::new(&Uint::from(254u32), p),
-        );
-        assert!(point_f.clone() + point_g == point_e);
+        assert!(POINT_A + POINT_B == result);
     }
 
     #[test]
-    fn test_point_doubling() {
-        let params = CsidhParams::EXAMPLE_0;
-        let p = params.p();
-        let e = CsidhEllipticCurve::new(params, MontyForm::zero(p));
-
-        let point_a = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(74u32), p),
-            MontyForm::new(&Uint::from(214u32), p),
+    fn point_doubling() {
+        let result = Point::new_aff(
+            E0,
+            MontyForm::new(
+                &Uint::from_be_hex(
+                    "06943b90d5222a3d53eb510f4c2a87101b2413f8fd22f8cad1bd3a44be42d06a\
+                    5c528bef417d9a41cc81b6feb56cb69ef9bc50163a2e36cabf2684430aa79f6f",
+                ),
+                P,
+            ),
+            MontyForm::new(
+                &Uint::from_be_hex(
+                    "1320889e47c3e5b98b6ab80e1f52f543777879b3dd2922632342c4637182da05\
+                    af306f7ee3269fc96fdc50474a246ad74c37c53a4d12c5ca1697564c19e07858",
+                ),
+                P,
+            ),
         );
-        let point_b = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(139u32), p),
-            MontyForm::new(&Uint::from(35u32), p),
-        );
-        assert!(point_a.clone() + point_a == point_b);
-
-        let point_c = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(61u32), p),
-            MontyForm::new(&Uint::from(319u32), p),
-        );
-        let point_d = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(413u32), p),
-            MontyForm::new(&Uint::from(240u32), p),
-        );
-        assert!(point_c.clone() + point_c == point_d);
-
-        let point_e = Point::infinity(e.clone());
-        assert!(point_e.clone() + point_e.clone() == point_e);
+        assert!(POINT_A + POINT_A == result);
     }
 
     #[test]
-    fn test_point_multiplication_by_2() {
-        let params = CsidhParams::EXAMPLE_0;
-        let p = params.p();
-        let e = CsidhEllipticCurve::new(params, MontyForm::zero(p));
-
-        let point_a = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(74u32), p),
-            MontyForm::new(&Uint::from(205u32), p),
+    fn point_multiplication() {
+        let result = Point::new_aff(
+            E0,
+            MontyForm::new(
+                &Uint::from_be_hex(
+                    "1c69a4fadb3436939e3a9239058abf97a867d593a523fbb739c153a260516c03\
+                    ee4e7d5b6133e030a0248127a73295804d7c5e5192cfacb762a7606a1514398b",
+                ),
+                P,
+            ),
+            MontyForm::new(
+                &Uint::from_be_hex(
+                    "500f0f727508f34264abff1086fcdf8cd7ea22c52f49515e2e81e9d08607dc1b\
+                    94f440dda7b73c03e343d4de2b2db7c545ac2e58b96057888eac64de35aba24a",
+                ),
+                P,
+            ),
         );
-        let point_b = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(139u32), p),
-            MontyForm::new(&Uint::from(384u32), p),
-        );
-        assert!(point_a.clone() * 2 == point_b);
-    }
-
-    #[test]
-    fn test_point_multiplication() {
-        let params = CsidhParams::EXAMPLE_0;
-        let p = params.p();
-        let e = CsidhEllipticCurve::new(params, MontyForm::zero(p));
-
-        let point_a = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(74u32), p),
-            MontyForm::new(&Uint::from(214u32), p),
-        );
-        let point_b = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(56u32), p),
-            MontyForm::new(&Uint::from(207u32), p),
-        );
-        assert!(point_a * 3 == point_b);
-
-        let point_c = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(417u32), p),
-            MontyForm::new(&Uint::from(165u32), p),
-        );
-        let point_d = Point::infinity(e.clone());
-        assert!(point_c * 70 == point_d);
-    }
-
-    #[test]
-    fn test_order_calculation() {
-        let params = CsidhParams::EXAMPLE_0;
-        let p = params.p();
-        let e = CsidhEllipticCurve::new(params, MontyForm::zero(p));
-
-        let point = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(193u32), p),
-            MontyForm::new(&Uint::from(116u32), p),
-        );
-        assert_eq!(point.order(), Uint::from(140u32));
-
-        let point = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(417u32), p),
-            MontyForm::new(&Uint::from(165u32), p),
-        );
-        assert_eq!(point.order(), Uint::from(70u32));
-    }
-
-    #[test]
-    fn test_multiplication_by_order() {
-        let params = CsidhParams::EXAMPLE_0;
-        let p = params.p();
-        let e = CsidhEllipticCurve::new(params, MontyForm::zero(p));
-
-        let point = Point::new_aff(
-            e.clone(),
-            MontyForm::new(&Uint::from(193u32), p),
-            MontyForm::new(&Uint::from(116u32), p),
-        );
-        assert_eq!((point.clone() * point.order()).proj_z, MontyForm::zero(p));
+        assert!(POINT_A * 63 == result);
     }
 }

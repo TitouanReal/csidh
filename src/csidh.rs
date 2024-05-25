@@ -115,17 +115,97 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_csidh() {
-        let params = CsidhParams::EXAMPLE_1;
+    fn csidh_easy() {
+        let params = CsidhParams::CSIDH_512;
+        let p = params.p();
+        let path = {
+            let mut temp = [0; 74];
+            temp[0] = 1;
+            temp
+        };
+        let start = MontyForm::zero(p);
+        let public_key = csidh(params, path, start);
+        assert_eq!(
+            public_key,
+            MontyForm::new(
+                &Uint::from_be_hex(
+                    "53BAA451F759835A01933C76BC58C0C203A9B6B02F7F086B30C3469A8452750\
+                    AAECA8A4F7C26BFF43876F4510F405F4D2A006635D89A42D327D9A2E8C00BF340"
+                ),
+                p
+            )
+        );
+    }
+
+    #[test]
+    fn csidh_medium() {
+        let params = CsidhParams::CSIDH_512;
+        let p = params.p();
+        let path = {
+            let mut temp = [0; 74];
+            temp[0] = 1;
+            temp[1] = 1;
+            temp
+        };
+        let start = MontyForm::zero(p);
+        let public_key = csidh(params, path, start);
+        assert_eq!(
+            public_key,
+            MontyForm::new(
+                &Uint::from_be_hex(
+                    "64BB503A4BCA4A4CEF79A054740B11D35C2D1C5778FC05F5AEA1C4FA0CFE4C9\
+                    E36198514A67F220116C0F70C5511FB4163BECD5CF7347BC2DB66306AAFE6CEF0"
+                ),
+                p
+            )
+        );
+    }
+
+    #[test]
+    fn csidh_long() {
+        let params = CsidhParams::CSIDH_512;
+        let p = params.p();
+        let path = {
+            let mut temp = [0; 74];
+            temp[0] = 1;
+            temp[1] = 3;
+            temp[73] = 1;
+            temp
+        };
+        let start = MontyForm::zero(p);
+        let public_key = csidh(params, path, start);
+        assert_eq!(
+            public_key,
+            MontyForm::new(
+                &Uint::from_be_hex(
+                    "3F0D6D05BDB550AF6459BBDBC08E40338AA2D22A4E8BD6EF1DF113688D3FD23\
+                    EAB8C22365A23C4702A2AAC1835B7BED06B0C8E78E5F432D6296C244812CF25B3"
+                ),
+                p
+            )
+        );
+    }
+
+    #[test]
+    fn csidh_very_long() {
+        let params = CsidhParams::CSIDH_512;
         let p = params.p();
         let path = [
-            1, 2, 5, 3, 4, 2, 3, 5, 1, 2, 0, 3, 7, 1, 3, 4, 0, 3, 1, 5, 4,
+            8, 2, 9, 3, 3, 0, 7, 2, 0, 8, 1, 9, 9, 4, 0, 10, 6, 3, 10, 7, 2, 3, 1, 4, 5, 3, 9, 10,
+            9, 3, 8, 5, 1, 10, 2, 4, 2, 10, 1, 1, 10, 8, 0, 9, 1, 8, 7, 6, 10, 9, 9, 4, 10, 6, 4,
+            4, 2, 3, 5, 5, 5, 3, 0, 9, 6, 9, 8, 5, 5, 9, 2, 0, 3, 6,
         ];
         let start = MontyForm::zero(p);
         let public_key = csidh(params, path, start);
         assert_eq!(
             public_key,
-            MontyForm::new(&Uint::from_be_hex("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000032F5FA35675EEB1CABC777FAED"), p)
+            MontyForm::new(
+                &Uint::from_be_hex(
+                    "4ABA8DC557FA0A29A38A133253A99619A4EE708BD8A23284138CF6759C06B13\
+                    B7CF623502EAFC1D1F847CF42A72C8807F6E9E79B56ED4318EAC92C7E93DCA1AC"
+                ),
+                p
+            )
         );
     }
 }
