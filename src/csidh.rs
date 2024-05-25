@@ -22,87 +22,52 @@ pub fn csidh<const N: usize>(
     while !path.into_iter().all(|x| x == 0) {
         let x = MontyForm::new(&Uint::from(rand.rand_u64()), p.clone());
 
-        if let Some(mut point) = e.lift(x) {
-            let order;
+        let mut k = Uint::from(4u32);
 
-            if cfg!(feature = "no_cm_order") {
-                // Order calculation
-                order = point.order();
-            } else {
-                // Remove possible factor 2 from the order of the point
-                point = point * 4;
-                // Order calculation
-                order = point.order_not_multiple_of_2();
-            }
+        for (_, li) in lis.iter().enumerate().filter(|(i, _)| path[*i] == 0) {
+            k = k * Uint::<LIMBS>::from(*li);
+        }
 
-            for (i, li) in lis.into_iter().enumerate() {
-                if path[i] <= 0 {
-                    continue;
-                }
+        if let Some(mut point_p) = e.lift(x) {
+            point_p = point_p * k;
 
-                // div rem
-                let (div, rem) = order
-                    .clone()
-                    .div_rem(&NonZero::new(Uint::from(li)).unwrap());
-                if rem != Uint::ZERO {
-                    continue;
-                }
+            for (i, li) in lis.iter().enumerate().filter(|(i, _)| path[*i] > 0) {
+                let m = {
+                    let mut temp = Uint::ONE;
+                    for (_, li) in lis
+                        .iter()
+                        .enumerate()
+                        .filter(|(j, _)| path[*j] > 0 && *j > i)
+                    {
+                        temp = temp * Uint::<LIMBS>::from(*li);
+                    }
+                    temp
+                };
 
-                // Regularization ("reg")
-                point = point * div;
+                let point_k = point_p * m;
 
-                let mut temp = point.clone();
-                let mut tau = MontyForm::one(p.clone());
-                let mut sigma = MontyForm::zero(p.clone());
+                if !point_k.is_infinity() {
+                    let mut temp = point_k.clone();
+                    let mut tau = MontyForm::one(p.clone());
+                    let mut sigma = MontyForm::zero(p.clone());
 
-                // Countermeasure against variable time VeLu
-                if cfg!(feature = "no_cm_velu") {
-                    // Velu
-                    for _ in 1..li {
+                    for _ in 1..*li {
                         let x = temp.x().unwrap();
                         tau = tau * x;
                         sigma = sigma + x - x.inv().unwrap();
-                        temp = temp + point.clone();
+                        temp = temp + point_k.clone();
                     }
-                } else {
-                    // Velu
-                    for _ in 1..li {
-                        let x = temp.x().unwrap();
-                        tau = tau * x;
-                        sigma = sigma + x - x.inv().unwrap();
-                        temp = temp + point.clone();
-                    }
-                    let mut dummy_left = lis[lis.len() - 1] - li;
-                    while dummy_left != 0 {
-                        let mut temp2 = point.clone();
-                        let mut tau2 = MontyForm::one(p.clone());
-                        let mut sigma2 = MontyForm::zero(p.clone());
-                        for _ in 1..li {
-                            let x = temp2.x().unwrap();
-                            tau2 = tau2 * x;
-                            sigma2 = sigma2 + x - x.inv().unwrap();
-                            temp2 = temp2 + point.clone();
-                            dummy_left -= 1;
-                            if dummy_left == 0 {
-                                break;
-                            }
-                        }
-                    }
+
+                    let three = MontyForm::new(&Uint::from(3u32), p.clone());
+                    let b = tau * (e.a2() - sigma * three);
+                    e = CsidhEllipticCurve::new(params.clone(), b);
+                    path[i] -= 1;
+
+                    break;
                 }
-
-                let three = MontyForm::new(&Uint::from(3u32), p.clone());
-                let b = tau * (e.a2() - sigma * three);
-                e = CsidhEllipticCurve::new(params.clone(), b);
-                path[i] -= 1;
-
-                break;
             }
         } else {
             continue;
-            // TODO construct E over Fp2
-            // TODO find order of P
-            // TODO construct point of good order
-            // TODO find next e with VELU
         }
     }
     e.a2()

@@ -198,31 +198,13 @@ impl<const N: usize> CsidhEllipticCurve<N> {
     }
 
     pub fn lift(&self, x: MontyForm<LIMBS>) -> Option<Point<N>> {
-        let p = &self.field_characteristic();
         // Tonelli-shanks special case
         // In csidh, p = 3 mod 4
         let x_square = x.square();
         let n = x * x_square + self.a2 * x_square + x;
 
-        let r;
+        let r = n.pow(&self.params.lis_product());
 
-        // Countermeasure against (p+1)/4
-        if cfg!(feature = "no_cm_p_plus_1_over_4") {
-            // (p+1)/4 calculation
-            let mut exponent: Uint<LIMBS> = Uint::ONE;
-
-            for li in self.params.lis().into_iter() {
-                exponent = exponent.mul_mod(&Uint::from(li), &p.modulus().get());
-            }
-
-            // lift exp
-            r = n.pow(&exponent);
-        } else {
-            // lift exp
-            r = n.pow(&self.params.lis_product());
-        }
-
-        // lift square
         if r.square() == n {
             Some(Point::new_aff(self.clone(), x, r))
         } else {

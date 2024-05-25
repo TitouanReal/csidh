@@ -15,9 +15,3 @@ categories = ["cryptography", "no-std"]
 crypto-bigint = { version = "0.6.0-pre.12", default-features = false }
 # TODO Use rand_chacha
 oorandom = "11"
-
-[features]
-no_cm_velu = []
-no_cm_order = []
-no_cm_p_plus_1_over_4 = []
-no_cm = ["no_cm_velu", "no_cm_p_plus_1_over_4", "no_cm_order"]
