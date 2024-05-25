@@ -6,20 +6,12 @@ use core::fmt::{self, Display};
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct PrivateKey<const N: usize> {
     params: CsidhParams<N>,
-    key: [i32; N],
+    key: [u32; N],
 }
 
 impl<const N: usize> PrivateKey<N> {
-    /// Creates a private key from a given path.
-    pub const fn new(params: CsidhParams<N>, key: [i32; N]) -> Self {
-        // TODO remove this once negative paths are implemented
-        let mut i = 0;
-        while i < N {
-            if key[i] < 0 {
-                panic!("Negative paths are unsupported as of now");
-            }
-            i += 1;
-        }
+    /// Constructs a new `PrivateKey` from the given `key`.
+    pub const fn new(params: CsidhParams<N>, key: [u32; N]) -> Self {
         PrivateKey { params, key }
     }
 

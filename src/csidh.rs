@@ -13,7 +13,7 @@ const LIMBS: usize = 8;
 
 pub fn csidh<const N: usize>(
     params: CsidhParams<N>,
-    mut path: [i32; N],
+    mut path: [u32; N],
     start: MontyForm<LIMBS>,
 ) -> MontyForm<LIMBS> {
     let p = params.p();
