@@ -4,9 +4,8 @@ version = "0.1.0"
 authors = ["Titouan Real <titouan.real@gmail.com>"]
 edition = "2021"
 rust-version = "1.76"
-description = """
-Pure Rust implementation of of the CSIDH cryptographic algorithm for secret key exchange. Provides a (not yet) constant-time, no_std-friendly implementation.
-"""
+description = """Pure Rust implementation of the CSIDH cryptographic algorithm for secret key
+exchange. Provides a no_std-friendly implementation. Not constant-time yet."""
 repository = "https://github.com/TitouanReal/csidh"
 license = "Apache-2.0 OR MIT"
 keywords = ["crypto", "elliptic-curve", "isogeny", "csidh", "quantum"]
