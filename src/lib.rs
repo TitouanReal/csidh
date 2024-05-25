@@ -42,7 +42,7 @@
 //! ```
 
 #![no_std]
-#![warn(missing_docs)]
+#![warn(missing_docs, missing_debug_implementations)]
 
 mod csidh;
 mod csidh_params;
