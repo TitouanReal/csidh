@@ -11,7 +11,18 @@ pub struct PrivateKey<const N: usize> {
 
 impl<const N: usize> PrivateKey<N> {
     /// Constructs a new `PrivateKey` from the given `key`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if a key element is greater than 10.
     pub const fn new(params: CsidhParams<N>, key: [u32; N]) -> Self {
+        let mut i = 0;
+        while i < N {
+            if key[i] > 10 {
+                panic!("A key element is greater than 10");
+            }
+            i += 1;
+        }
         PrivateKey { params, key }
     }
 

@@ -18,26 +18,31 @@ pub fn csidh<const N: usize>(
     let lis = params.lis();
     let mut e = CsidhEllipticCurve::new(params, start);
 
-    let mut rand = Rand64::new(454_621u128);
-    while !path.into_iter().all(|x| x == 0) {
-        let x = MontyForm::new(&Uint::from(rand.rand_u64()), p);
-
-        let mut k = Uint::from(4u32);
-
-        for (_, li) in lis.iter().enumerate().filter(|(i, _)| path[*i] == 0) {
-            k = k * Uint::<LIMBS>::from(*li);
+    let mut dummies: [u32; N] = {
+        let mut temp = [0; N];
+        for i in 0..N {
+            temp[i] = 10 - path[i];
         }
+        temp
+    };
+
+    let mut k = Uint::from(4u32);
+
+    let mut rand = Rand64::new(454_621u128);
+
+    while !path.into_iter().all(|x| x == 0) || !dummies.into_iter().all(|x| x == 0) {
+        let x = MontyForm::new(&Uint::from(rand.rand_u64()), p);
 
         if let Some(mut point_p) = e.lift(x) {
             point_p = point_p * k;
 
-            for (i, li) in lis.iter().enumerate().filter(|(i, _)| path[*i] > 0) {
+            let s = lis.iter().enumerate().filter(|(i, _)| path[*i] > 0 || dummies[*i] > 0);
+
+            for (i, li) in s.clone() {
                 let m = {
                     let mut temp = Uint::ONE;
-                    for (_, li) in lis
-                        .iter()
-                        .enumerate()
-                        .filter(|(j, _)| path[*j] > 0 && *j > i)
+                    for (_, li) in s.clone()
+                        .filter(|(j, _)| *j > i)
                     {
                         temp = temp * Uint::<LIMBS>::from(*li);
                     }
@@ -47,21 +52,44 @@ pub fn csidh<const N: usize>(
                 let point_k = point_p * m;
 
                 if !point_k.is_infinity() {
-                    let mut temp = point_k;
-                    let mut tau = MontyForm::one(p);
-                    let mut sigma = MontyForm::zero(p);
+                    if path[i] > 0 {
+                        let mut temp = point_k;
+                        let mut tau = MontyForm::one(p);
+                        let mut sigma = MontyForm::zero(p);
 
-                    for _ in 1..*li {
-                        let x = temp.x().unwrap();
-                        tau *= x;
-                        sigma = sigma + x - x.inv().unwrap();
-                        temp = temp + point_k;
+                        for _ in 1..*li {
+                            let x = temp.x().unwrap();
+                            tau *= x;
+                            sigma = sigma + x - x.inv().unwrap();
+                            temp = temp + point_k;
+                        }
+
+                        let three = MontyForm::new(&Uint::from(3u32), p);
+                        let b = tau * (e.a2() - sigma * three);
+
+                        e = CsidhEllipticCurve::new(params, b);
+                        path[i] -= 1;
+                    } else {
+                        let mut temp = point_k;
+                        let mut tau = MontyForm::one(p);
+                        let mut sigma = MontyForm::zero(p);
+
+                        for _ in 1..*li {
+                            let x = temp.x().unwrap();
+                            tau *= x;
+                            sigma = sigma + x - x.inv().unwrap();
+                            temp = temp + point_k;
+                        }
+
+                        let three = MontyForm::new(&Uint::from(3u32), p);
+                        let _ = tau * (e.a2() - sigma * three);
+
+                        dummies[i] -= 1;
                     }
 
-                    let three = MontyForm::new(&Uint::from(3u32), p);
-                    let b = tau * (e.a2() - sigma * three);
-                    e = CsidhEllipticCurve::new(params, b);
-                    path[i] -= 1;
+                    if path[i] == 0 && dummies[i] == 0 {
+                        k = k * Uint::<LIMBS>::from(*li);
+                    }
 
                     break;
                 }

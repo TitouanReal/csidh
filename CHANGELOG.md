@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- `PrivateKey::new` now panics is a key element is greater than 10.
+This is due to the addition of dummy operations meant to prevent side-channel attacks.
+
 ## [0.2] - 2024-05-25
 
 ### Added
