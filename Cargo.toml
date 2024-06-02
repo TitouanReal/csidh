@@ -3,7 +3,7 @@ name = "csidh"
 version = "0.2.0"
 authors = ["Titouan Real <titouan.real@gmail.com>"]
 edition = "2021"
-rust-version = "1.76"
+rust-version = "1.78"
 description = """Pure Rust implementation of the CSIDH cryptographic algorithm for secret key
 exchange. Provides a no_std-friendly implementation. Not constant-time yet."""
 repository = "https://github.com/TitouanReal/csidh"
