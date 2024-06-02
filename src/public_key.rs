@@ -1,16 +1,10 @@
 use core::fmt::{self, Display};
 
-use crate::{
-    csidh::csidh, csidh_params::CsidhParams, montgomery_curve::MontgomeryCurve, private_key::PrivateKey
-};
-
 use crypto_bigint::{modular::MontyForm, Uint};
 
-// TODO Make LIMBS auto-calculated depending on chosen params
-#[cfg(target_pointer_width = "32")]
-const LIMBS: usize = 16;
-#[cfg(target_pointer_width = "64")]
-const LIMBS: usize = 8;
+use crate::{
+    csidh::csidh, csidh_params::CsidhParams, limbs::LIMBS, montgomery_curve::MontgomeryCurve, private_key::PrivateKey
+};
 
 /// A public key for the CSIDH key exchange.
 #[derive(Clone, Copy, Debug, PartialEq)]

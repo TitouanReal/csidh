@@ -1,13 +1,7 @@
-use crate::{csidh_params::CsidhParams, montgomery_curve::MontgomeryCurve};
-
 use crypto_bigint::{modular::MontyForm, Uint};
 use oorandom::Rand64;
 
-// TODO Make LIMBS auto-calculated depending on chosen params
-#[cfg(target_pointer_width = "32")]
-const LIMBS: usize = 16;
-#[cfg(target_pointer_width = "64")]
-const LIMBS: usize = 8;
+use crate::{csidh_params::CsidhParams, limbs::LIMBS, montgomery_curve::MontgomeryCurve};
 
 pub fn csidh<const N: usize>(
     params: CsidhParams<N>,

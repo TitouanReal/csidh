@@ -1,10 +1,10 @@
-use crate::{limbs::LIMBS, montgomery_point::MontgomeryPoint, CsidhParams};
-
 use crypto_bigint::{
     modular::{MontyForm, MontyParams},
     Uint,
 };
 use oorandom::Rand64;
+
+use crate::{limbs::LIMBS, montgomery_point::MontgomeryPoint, CsidhParams};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct MontgomeryCurve<const N: usize> {

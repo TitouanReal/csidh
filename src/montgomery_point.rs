@@ -1,8 +1,8 @@
 use core::ops::Mul;
 
-use crate::{limbs::LIMBS, montgomery_curve::MontgomeryCurve};
-
 use crypto_bigint::{modular::MontyForm, ConstChoice, Uint};
+
+use crate::{limbs::LIMBS, montgomery_curve::MontgomeryCurve};
 
 pub struct PointMultiples<const N: usize> {
     n_times_p: MontgomeryPoint<N>,
