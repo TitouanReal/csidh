@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `PrivateKey::new` now panics is a key element is greater than 10.
 This is due to the addition of dummy operations meant to prevent side-channel attacks.
+- `PublicKey::from` and `SharedSecret::from` are now about 9 times faster.
 
 ## [0.2] - 2024-05-25
 
