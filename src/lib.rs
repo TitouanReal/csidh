@@ -47,6 +47,9 @@
 mod csidh;
 mod csidh_params;
 mod elliptic_curve;
+mod limbs;
+mod montgomery_curve;
+mod montgomery_point;
 mod private_key;
 mod public_key;
 mod shared_secret;

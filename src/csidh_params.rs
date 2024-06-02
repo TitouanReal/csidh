@@ -4,12 +4,18 @@ const LIMBS: usize = 16;
 #[cfg(target_pointer_width = "64")]
 const LIMBS: usize = 8;
 
-use crypto_bigint::{impl_modulus, modular::MontyParams, Uint};
+use crypto_bigint::{
+    impl_modulus,
+    modular::{MontyForm, MontyParams},
+    Uint,
+};
 
 /// Parameters of the CSIDH key exchange.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct CsidhParams<const N: usize> {
     lis: [u64; N],
+    p_minus_1_over_2: Uint<LIMBS>,
+    inverse_of_4: MontyForm<LIMBS>,
     lis_product: Uint<LIMBS>,
     p: MontyParams<LIMBS>,
 }
@@ -30,6 +36,8 @@ impl CsidhParams<74> {
             181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271,
             277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 587
         ],
+        inverse_of_4: MontyForm::new(&Uint::from_be_hex("196d23a3dd03e26fff22ac34578f9312ad0b420ebb72231096beff31a4c8b27369eab1b159fcd541d459cc3307c2d3c9709c86fd15eb2a0d46e06e414cf1b21f"), MontyParams::from_const_params::<PrimeCsidh512>()),
+        p_minus_1_over_2: Uint::from_be_hex("32da4747ba07c4dffe455868af1f26255a16841d76e446212d7dfe63499164e6d3d56362b3f9aa83a8b398660f85a792e1390dfa2bd6541a8dc0dc8299e3643d"),
         lis_product: Uint::from_be_hex("196d23a3dd03e26fff22ac34578f9312ad0b420ebb72231096beff31a4c8b27369eab1b159fcd541d459cc3307c2d3c9709c86fd15eb2a0d46e06e414cf1b21f"),
         p: MontyParams::from_const_params::<PrimeCsidh512>(),
     };
@@ -85,6 +93,14 @@ impl CsidhParams<74> {
 impl<const N: usize> CsidhParams<N> {
     pub(crate) const fn lis(self) -> [u64; N] {
         self.lis
+    }
+
+    pub(crate) const fn p_minus_1_over_2(self) -> Uint<LIMBS> {
+        self.p_minus_1_over_2
+    }
+
+    pub(crate) const fn inverse_of_4(self) -> MontyForm<LIMBS> {
+        self.inverse_of_4
     }
 
     pub(crate) const fn lis_product(self) -> Uint<LIMBS> {
