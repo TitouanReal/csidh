@@ -36,14 +36,15 @@ pub fn csidh<const N: usize>(
         if let Some(mut point_p) = e.lift(x) {
             point_p = point_p * k;
 
-            let s = lis.iter().enumerate().filter(|(i, _)| path[*i] > 0 || dummies[*i] > 0);
+            let s = lis
+                .iter()
+                .enumerate()
+                .filter(|(i, _)| path[*i] > 0 || dummies[*i] > 0);
 
             for (i, li) in s.clone() {
                 let m = {
                     let mut temp = Uint::ONE;
-                    for (_, li) in s.clone()
-                        .filter(|(j, _)| *j > i)
-                    {
+                    for (_, li) in s.clone().filter(|(j, _)| *j > i) {
                         temp = temp * Uint::<LIMBS>::from(*li);
                     }
                     temp

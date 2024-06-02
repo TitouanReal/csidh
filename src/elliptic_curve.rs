@@ -175,7 +175,9 @@ impl<const N: usize> PartialEq for Point<N> {
             true
         } else if self.proj_z == zero || other.proj_z == zero {
             false
-        } else {self.x().unwrap() == other.x().unwrap() && self.y().unwrap() == other.y().unwrap()}
+        } else {
+            self.x().unwrap() == other.x().unwrap() && self.y().unwrap() == other.y().unwrap()
+        }
     }
 }
 
