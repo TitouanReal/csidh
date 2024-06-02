@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3] - 2024-06-02
+
 ### Changed
 
 - `PrivateKey::new` now panics is a key element is greater than 10.
