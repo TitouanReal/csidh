@@ -39,20 +39,17 @@ impl<const N: usize> Iterator for PointMultiples<N> {
         let x1 = self.n_times_p.X;
         let x2 = self.p.X;
 
-        let n_plus_1_times_p;
-
-        if x1 == x2 {
-            n_plus_1_times_p = self.p.double();
+        let n_plus_1_times_p = if x1 == x2 {
+            self.p.double()
         } else {
-            n_plus_1_times_p = self
-                .n_times_p
-                .differential_add(self.p, self.n_minus_1_times_p);
-        }
+            self.n_times_p
+                .differential_add(self.p, self.n_minus_1_times_p)
+        };
 
         self.n_minus_1_times_p = self.n_times_p;
         self.n_times_p = n_plus_1_times_p;
         self.left = self.left - Uint::ONE;
-        return Some(n_plus_1_times_p);
+        Some(n_plus_1_times_p)
     }
 }
 

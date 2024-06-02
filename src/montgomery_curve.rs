@@ -46,13 +46,11 @@ impl<const N: usize> MontgomeryCurve<N> {
     }
 
     pub fn random_point(&self) -> MontgomeryPoint<N> {
+        let mut rand = Rand64::new(816958178u128);
         loop {
-            let mut rand = Rand64::new(816958178u128);
-            loop {
-                let x = MontyForm::new(&Uint::from(rand.rand_u64()), self.field_characteristic());
-                if let Some(point) = self.lift(x) {
-                    return point;
-                }
+            let x = MontyForm::new(&Uint::from(rand.rand_u64()), self.field_characteristic());
+            if let Some(point) = self.lift(x) {
+                return point;
             }
         }
     }
