@@ -19,7 +19,10 @@ pub struct CsidhParams<const N: usize> {
     p: MontyParams<LIMBS>,
 }
 
-impl_modulus!(PrimeCsidh512, Uint<LIMBS>, "65b48e8f740f89bffc8ab0d15e3e4c4ab42d083aedc88c425afbfcc69322c9cda7aac6c567f35507516730cc1f0b4f25c2721bf457aca8351b81b90533c6c87b");
+impl_modulus!(
+    PrimeCsidh512, Uint<LIMBS>, "65b48e8f740f89bffc8ab0d15e3e4c4ab42d083aedc88c425afbfcc69322c9c\
+    da7aac6c567f35507516730cc1f0b4f25c2721bf457aca8351b81b90533c6c87b"
+);
 
 impl CsidhParams<74> {
     /// CSIDH-512 as defined in <i>
@@ -31,12 +34,22 @@ impl CsidhParams<74> {
     pub const CSIDH_512: CsidhParams<74> = CsidhParams {
         lis: [
             3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83,
-            89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179,
-            181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271,
-            277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 587
+            89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173,
+            179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269,
+            271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373,
+            587
         ],
-        inverse_of_4: MontyForm::new(&Uint::from_be_hex("196d23a3dd03e26fff22ac34578f9312ad0b420ebb72231096beff31a4c8b27369eab1b159fcd541d459cc3307c2d3c9709c86fd15eb2a0d46e06e414cf1b21f"), MontyParams::from_const_params::<PrimeCsidh512>()),
-        p_minus_1_over_2: Uint::from_be_hex("32da4747ba07c4dffe455868af1f26255a16841d76e446212d7dfe63499164e6d3d56362b3f9aa83a8b398660f85a792e1390dfa2bd6541a8dc0dc8299e3643d"),
+        inverse_of_4: MontyForm::new(
+            &Uint::from_be_hex(
+                "196d23a3dd03e26fff22ac34578f9312ad0b420ebb72231096beff31a4c8b27\
+                369eab1b159fcd541d459cc3307c2d3c9709c86fd15eb2a0d46e06e414cf1b21f"
+            ),
+            MontyParams::from_const_params::<PrimeCsidh512>()
+        ),
+        p_minus_1_over_2: Uint::from_be_hex(
+            "32da4747ba07c4dffe455868af1f26255a16841d76e446212d7dfe63499164e\
+            6d3d56362b3f9aa83a8b398660f85a792e1390dfa2bd6541a8dc0dc8299e3643d"
+        ),
         p: MontyParams::from_const_params::<PrimeCsidh512>(),
     };
 }
