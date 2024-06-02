@@ -163,7 +163,7 @@ impl<const N: usize> Mul<Uint<LIMBS>> for MontgomeryPoint<N> {
         let mut x0 = self;
         let mut x1 = self.double();
 
-        for index in (0..other.bits()-1).rev() {
+        for index in (0..other.bits() - 1).rev() {
             let bit = other.bit(index);
             if bit == ConstChoice::FALSE {
                 x1 = x1.differential_add(x0, self);
@@ -247,7 +247,10 @@ mod tests {
         for (i, p) in point_a.multiples(Uint::from(4u32)).enumerate() {
             assert_eq!(p, multiples[i]);
         }
-        assert_eq!(point_a_times_237, point_a.multiples(Uint::from(237u32)).last().unwrap());
+        assert_eq!(
+            point_a_times_237,
+            point_a.multiples(Uint::from(237u32)).last().unwrap()
+        );
     }
 
     #[test]

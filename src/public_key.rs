@@ -3,7 +3,8 @@ use core::fmt::{self, Display};
 use crypto_bigint::{modular::MontyForm, Uint};
 
 use crate::{
-    csidh::csidh, csidh_params::CsidhParams, limbs::LIMBS, montgomery_curve::MontgomeryCurve, private_key::PrivateKey
+    csidh::csidh, csidh_params::CsidhParams, limbs::LIMBS, montgomery_curve::MontgomeryCurve,
+    private_key::PrivateKey,
 };
 
 /// A public key for the CSIDH key exchange.
