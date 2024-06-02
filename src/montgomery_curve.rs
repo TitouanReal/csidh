@@ -45,7 +45,7 @@ impl<const N: usize> MontgomeryCurve<N> {
         }
     }
 
-    pub fn _random_point(&self) -> MontgomeryPoint<N> {
+    pub fn random_point(&self) -> MontgomeryPoint<N> {
         loop {
             let mut rand = Rand64::new(816958178u128);
             loop {
@@ -55,5 +55,33 @@ impl<const N: usize> MontgomeryCurve<N> {
                 }
             }
         }
+    }
+
+    pub fn is_supersingular(&self) -> bool {
+        let point = self.random_point();
+        let mut d = Uint::ONE;
+        let sqrt_of_p_times_4 =
+            self.field_characteristic().modulus().get().sqrt() * Uint::<1>::from(4u8);
+
+        for li in self.params.lis().into_iter() {
+            let mut value = Uint::from(4u32);
+            for li_2 in self.params.lis().into_iter() {
+                if li_2 != li {
+                    value = value.mul_mod(&Uint::from(li_2), &Uint::MAX);
+                }
+            }
+
+            let qi = point * value;
+            if (qi * Uint::from(li)).is_infinity() {
+                return false;
+            }
+            if qi.is_infinity() {
+                d = d.mul_mod(&Uint::from(li), &Uint::MAX);
+            }
+            if d > sqrt_of_p_times_4 {
+                return true;
+            }
+        }
+        self.is_supersingular()
     }
 }

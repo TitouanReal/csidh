@@ -1,8 +1,7 @@
 use core::fmt::{self, Display};
 
 use crate::{
-    csidh::csidh, csidh_params::CsidhParams, elliptic_curve::CsidhEllipticCurve,
-    private_key::PrivateKey,
+    csidh::csidh, csidh_params::CsidhParams, montgomery_curve::MontgomeryCurve, private_key::PrivateKey
 };
 
 use crypto_bigint::{modular::MontyForm, Uint};
@@ -35,7 +34,7 @@ impl PublicKey {
     /// Constructs a `PublicKey` from the foreign public key, if the key is valid.
     pub fn new(params: CsidhParams<LIMBS>, key: Uint<LIMBS>) -> Option<Self> {
         let key = MontyForm::new(&key, params.p());
-        if !CsidhEllipticCurve::new(params, key).is_supersingular() {
+        if !MontgomeryCurve::new(params, key).is_supersingular() {
             None
         } else {
             Some(PublicKey { key })
