@@ -1,4 +1,4 @@
-use crate::{csidh_params::CsidhParams, elliptic_curve::CsidhEllipticCurve};
+use crate::{csidh_params::CsidhParams, montgomery_curve::MontgomeryCurve};
 
 use crypto_bigint::{modular::MontyForm, Uint};
 use oorandom::Rand64;
@@ -16,7 +16,7 @@ pub fn csidh<const N: usize>(
 ) -> MontyForm<LIMBS> {
     let p = params.p();
     let lis = params.lis();
-    let mut e = CsidhEllipticCurve::new(params, start);
+    let mut e = MontgomeryCurve::new(params, start);
 
     let mut dummies: [u32; N] = {
         let mut temp = [0; N];
@@ -54,32 +54,28 @@ pub fn csidh<const N: usize>(
 
                 if !point_k.is_infinity() {
                     if path[i] > 0 {
-                        let mut temp = point_k;
                         let mut tau = MontyForm::one(p);
                         let mut sigma = MontyForm::zero(p);
 
-                        for _ in 1..*li {
-                            let x = temp.x().unwrap();
+                        for multiple in point_k.multiples(Uint::from(*li - 1)) {
+                            let x = multiple.x();
                             tau *= x;
                             sigma = sigma + x - x.inv().unwrap();
-                            temp = temp + point_k;
                         }
 
                         let three = MontyForm::new(&Uint::from(3u32), p);
                         let b = tau * (e.a2() - sigma * three);
 
-                        e = CsidhEllipticCurve::new(params, b);
+                        e = MontgomeryCurve::new(params, b);
                         path[i] -= 1;
                     } else {
-                        let mut temp = point_k;
                         let mut tau = MontyForm::one(p);
                         let mut sigma = MontyForm::zero(p);
 
-                        for _ in 1..*li {
-                            let x = temp.x().unwrap();
+                        for multiple in point_k.multiples(Uint::from(*li - 1)) {
+                            let x = multiple.x();
                             tau *= x;
                             sigma = sigma + x - x.inv().unwrap();
-                            temp = temp + point_k;
                         }
 
                         let three = MontyForm::new(&Uint::from(3u32), p);
