@@ -39,7 +39,7 @@ impl<const N: usize> MontgomeryCurve<N> {
         let x_square = x.square();
         let n = x * x_square + self.a2 * x_square + x;
         if n.pow(&self.params.p_minus_1_over_2()) == MontyForm::one(p) {
-            Some(MontgomeryPoint::new(*self, x))
+            Some(MontgomeryPoint::new_reduced(*self, x))
         } else {
             None
         }

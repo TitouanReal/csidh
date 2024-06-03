@@ -63,13 +63,18 @@ pub struct MontgomeryPoint<const N: usize> {
 
 impl<const N: usize> MontgomeryPoint<N> {
     #[allow(non_snake_case)]
-    pub const fn new(curve: MontgomeryCurve<N>, X: MontyForm<LIMBS>) -> Self {
+    pub const fn new_reduced(curve: MontgomeryCurve<N>, X: MontyForm<LIMBS>) -> Self {
         let p = curve.field_characteristic();
         MontgomeryPoint {
             curve,
             X,
             Z: MontyForm::one(p),
         }
+    }
+
+    #[allow(non_snake_case)]
+    pub const fn new(curve: MontgomeryCurve<N>, X: MontyForm<LIMBS>, Z: MontyForm<LIMBS>) -> Self {
+        MontgomeryPoint { curve, X, Z }
     }
 
     const fn infinity(curve: MontgomeryCurve<N>) -> Self {
@@ -87,6 +92,16 @@ impl<const N: usize> MontgomeryPoint<N> {
 
     pub fn x(&self) -> MontyForm<LIMBS> {
         self.X * self.Z.inv().unwrap()
+    }
+
+    #[allow(non_snake_case)]
+    pub fn X(&self) -> MontyForm<LIMBS> {
+        self.X
+    }
+
+    #[allow(non_snake_case)]
+    pub fn Z(&self) -> MontyForm<LIMBS> {
+        self.Z
     }
 
     fn differential_add(
@@ -192,7 +207,7 @@ mod tests {
         let e0: MontgomeryCurve<74> =
             MontgomeryCurve::new(CsidhParams::CSIDH_512, MontyForm::zero(p));
 
-        let point_a: MontgomeryPoint<74> = MontgomeryPoint::new(
+        let point_a: MontgomeryPoint<74> = MontgomeryPoint::new_reduced(
             e0,
             MontyForm::new(
                 &Uint::from_be_hex(
@@ -202,7 +217,7 @@ mod tests {
                 p,
             ),
         );
-        let point_a_times_2: MontgomeryPoint<74> = MontgomeryPoint::new(
+        let point_a_times_2: MontgomeryPoint<74> = MontgomeryPoint::new_reduced(
             e0,
             MontyForm::new(
                 &Uint::from_be_hex(
@@ -212,7 +227,7 @@ mod tests {
                 p,
             ),
         );
-        let point_a_times_3: MontgomeryPoint<74> = MontgomeryPoint::new(
+        let point_a_times_3: MontgomeryPoint<74> = MontgomeryPoint::new_reduced(
             e0,
             MontyForm::new(
                 &Uint::from_be_hex(
@@ -222,7 +237,7 @@ mod tests {
                 p,
             ),
         );
-        let point_a_times_4: MontgomeryPoint<74> = MontgomeryPoint::new(
+        let point_a_times_4: MontgomeryPoint<74> = MontgomeryPoint::new_reduced(
             e0,
             MontyForm::new(
                 &Uint::from_be_hex(
@@ -232,7 +247,7 @@ mod tests {
                 p,
             ),
         );
-        let point_a_times_237: MontgomeryPoint<74> = MontgomeryPoint::new(
+        let point_a_times_237: MontgomeryPoint<74> = MontgomeryPoint::new_reduced(
             e0,
             MontyForm::new(
                 &Uint::from_be_hex(
@@ -259,7 +274,7 @@ mod tests {
         let e0: MontgomeryCurve<74> =
             MontgomeryCurve::new(CsidhParams::CSIDH_512, MontyForm::zero(p));
 
-        let point_a: MontgomeryPoint<74> = MontgomeryPoint::new(
+        let point_a: MontgomeryPoint<74> = MontgomeryPoint::new_reduced(
             e0,
             MontyForm::new(
                 &Uint::from_be_hex(
@@ -269,7 +284,7 @@ mod tests {
                 p,
             ),
         );
-        let point_a_times_2: MontgomeryPoint<74> = MontgomeryPoint::new(
+        let point_a_times_2: MontgomeryPoint<74> = MontgomeryPoint::new_reduced(
             e0,
             MontyForm::new(
                 &Uint::from_be_hex(
@@ -279,7 +294,7 @@ mod tests {
                 p,
             ),
         );
-        let point_a_times_4: MontgomeryPoint<74> = MontgomeryPoint::new(
+        let point_a_times_4: MontgomeryPoint<74> = MontgomeryPoint::new_reduced(
             e0,
             MontyForm::new(
                 &Uint::from_be_hex(
@@ -289,7 +304,7 @@ mod tests {
                 p,
             ),
         );
-        let point_a_times_237: MontgomeryPoint<74> = MontgomeryPoint::new(
+        let point_a_times_237: MontgomeryPoint<74> = MontgomeryPoint::new_reduced(
             e0,
             MontyForm::new(
                 &Uint::from_be_hex(

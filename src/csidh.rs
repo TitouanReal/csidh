@@ -1,7 +1,10 @@
 use crypto_bigint::{modular::MontyForm, Uint};
 use oorandom::Rand64;
 
-use crate::{csidh_params::CsidhParams, limbs::LIMBS, montgomery_curve::MontgomeryCurve};
+use crate::{
+    csidh_params::CsidhParams, limbs::LIMBS, montgomery_curve::MontgomeryCurve,
+    montgomery_point::MontgomeryPoint,
+};
 
 pub fn csidh<const N: usize>(
     params: CsidhParams<N>,
@@ -30,10 +33,13 @@ pub fn csidh<const N: usize>(
         if let Some(mut point_p) = e.lift(x) {
             point_p = point_p * k;
 
+            let path_copy = path.clone();
+            let dummies_copy: [u32; N] = dummies.clone();
+
             let s = lis
                 .iter()
                 .enumerate()
-                .filter(|(i, _)| path[*i] > 0 || dummies[*i] > 0);
+                .filter(|(i, _)| path_copy[*i] > 0 || dummies_copy[*i] > 0);
 
             for (i, li) in s.clone() {
                 let m = {
@@ -61,6 +67,30 @@ pub fn csidh<const N: usize>(
                         let b = tau * (e.a2() - sigma * three);
 
                         e = MontgomeryCurve::new(params, b);
+                        point_p = {
+                            let x = point_p.X();
+                            let z = point_p.Z();
+                            let x_plus_z = x + z;
+                            let x_minus_z = x - z;
+
+                            let mut temp_x = MontyForm::new(&Uint::ONE, *x.params());
+                            let mut temp_z = MontyForm::new(&Uint::ONE, *z.params());
+                            for multiple in point_k.multiples(Uint::from(li / 2)) {
+                                let xi = multiple.X();
+                                let zi = multiple.Z();
+
+                                let a = x_minus_z * (xi + zi);
+                                let b = x_plus_z * (xi - zi);
+
+                                temp_x *= a + b;
+                                temp_z *= a - b;
+                            }
+
+                            let x_prime = x * temp_x.square();
+                            let z_prime = z * temp_z.square();
+
+                            MontgomeryPoint::new(e, x_prime, z_prime)
+                        };
                         path[i] -= 1;
                     } else {
                         let mut tau = MontyForm::one(p);
@@ -75,14 +105,13 @@ pub fn csidh<const N: usize>(
                         let three = MontyForm::new(&Uint::from(3u32), p);
                         let _ = tau * (e.a2() - sigma * three);
 
+                        point_p = point_p * Uint::from(*li);
                         dummies[i] -= 1;
                     }
 
                     if path[i] == 0 && dummies[i] == 0 {
                         k = k * Uint::<LIMBS>::from(*li);
                     }
-
-                    break;
                 }
             }
         } else {
