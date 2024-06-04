@@ -15,3 +15,15 @@ categories = ["cryptography", "no-std"]
 crypto-bigint = { version = "0.6.0-pre.12", default-features = false }
 # TODO Use rand_chacha
 oorandom = "11"
+
+[dev-dependencies]
+criterion = "0.5"
+rand = "0.8"
+
+[[bench]]
+name = "public_key"
+harness = false
+
+[[bench]]
+name = "shared_secret"
+harness = false
