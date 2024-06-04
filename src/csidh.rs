@@ -1,17 +1,29 @@
-use crypto_bigint::{modular::MontyForm, Uint};
+use crypto_bigint::{
+    modular::{BernsteinYangInverter, ConstMontyForm, ConstMontyParams},
+    Odd, PrecomputeInverter, Uint,
+};
 use oorandom::Rand64;
 
 use crate::{
-    csidh_params::CsidhParams, limbs::LIMBS, montgomery_curve::MontgomeryCurve,
-    montgomery_point::MontgomeryPoint,
+    csidh_params::CsidhParams, montgomery_curve::MontgomeryCurve, montgomery_point::MontgomeryPoint,
 };
 
-pub fn csidh<const N: usize>(
-    params: CsidhParams<N>,
+pub fn csidh<
+    const SAT_LIMBS: usize,
+    const N: usize,
+    MOD: ConstMontyParams<SAT_LIMBS>,
+    const UNSAT_LIMBS: usize,
+>(
+    params: CsidhParams<SAT_LIMBS, N, MOD>,
     mut path: [u32; N],
-    start: MontyForm<LIMBS>,
-) -> MontyForm<LIMBS> {
-    let p = params.p();
+    start: ConstMontyForm<MOD, SAT_LIMBS>,
+) -> ConstMontyForm<MOD, SAT_LIMBS>
+where
+    Odd<Uint<SAT_LIMBS>>: PrecomputeInverter<
+        Inverter = BernsteinYangInverter<SAT_LIMBS, UNSAT_LIMBS>,
+        Output = Uint<SAT_LIMBS>,
+    >,
+{
     let lis = params.lis();
     let mut e = MontgomeryCurve::new(params, start);
 
@@ -28,13 +40,13 @@ pub fn csidh<const N: usize>(
     let mut rand = Rand64::new(454_621u128);
 
     while !path.into_iter().all(|x| x == 0) || !dummies.into_iter().all(|x| x == 0) {
-        let x = MontyForm::new(&Uint::from(rand.rand_u64()), p);
+        let x = ConstMontyForm::new(&Uint::from(rand.rand_u64()));
 
         if let Some(mut point_p) = e.lift(x) {
             point_p = point_p * k;
 
-            let path_copy = path.clone();
-            let dummies_copy: [u32; N] = dummies.clone();
+            let path_copy = path;
+            let dummies_copy: [u32; N] = dummies;
 
             let s = lis
                 .iter()
@@ -45,7 +57,7 @@ pub fn csidh<const N: usize>(
                 let m = {
                     let mut temp = Uint::ONE;
                     for (_, li) in s.clone().filter(|(j, _)| *j > i) {
-                        temp = temp * Uint::<LIMBS>::from(*li);
+                        temp = temp * Uint::<SAT_LIMBS>::from(*li);
                     }
                     temp
                 };
@@ -54,8 +66,8 @@ pub fn csidh<const N: usize>(
 
                 if !point_k.is_infinity() {
                     if path[i] > 0 {
-                        let mut tau = MontyForm::one(p);
-                        let mut sigma = MontyForm::zero(p);
+                        let mut tau = ConstMontyForm::ONE;
+                        let mut sigma = ConstMontyForm::ZERO;
 
                         for multiple in point_k.multiples(Uint::from(*li - 1)) {
                             let x = multiple.x();
@@ -63,7 +75,7 @@ pub fn csidh<const N: usize>(
                             sigma = sigma + x - x.inv().unwrap();
                         }
 
-                        let three = MontyForm::new(&Uint::from(3u32), p);
+                        let three = ConstMontyForm::new(&Uint::from(3u32));
                         let b = tau * (e.a2() - sigma * three);
 
                         e = MontgomeryCurve::new(params, b);
@@ -73,8 +85,8 @@ pub fn csidh<const N: usize>(
                             let x_plus_z = x + z;
                             let x_minus_z = x - z;
 
-                            let mut temp_x = MontyForm::new(&Uint::ONE, *x.params());
-                            let mut temp_z = MontyForm::new(&Uint::ONE, *z.params());
+                            let mut temp_x = ConstMontyForm::ONE;
+                            let mut temp_z = ConstMontyForm::ONE;
                             for multiple in point_k.multiples(Uint::from(li / 2)) {
                                 let xi = multiple.X();
                                 let zi = multiple.Z();
@@ -93,8 +105,8 @@ pub fn csidh<const N: usize>(
                         };
                         path[i] -= 1;
                     } else {
-                        let mut tau = MontyForm::one(p);
-                        let mut sigma = MontyForm::zero(p);
+                        let mut tau = ConstMontyForm::ONE;
+                        let mut sigma = ConstMontyForm::ZERO;
 
                         for multiple in point_k.multiples(Uint::from(*li - 1)) {
                             let x = multiple.x();
@@ -102,7 +114,7 @@ pub fn csidh<const N: usize>(
                             sigma = sigma + x - x.inv().unwrap();
                         }
 
-                        let three = MontyForm::new(&Uint::from(3u32), p);
+                        let three = ConstMontyForm::new(&Uint::from(3u32));
                         let _ = tau * (e.a2() - sigma * three);
 
                         point_p = point_p * Uint::from(*li);
@@ -110,7 +122,7 @@ pub fn csidh<const N: usize>(
                     }
 
                     if path[i] == 0 && dummies[i] == 0 {
-                        k = k * Uint::<LIMBS>::from(*li);
+                        k = k * Uint::<SAT_LIMBS>::from(*li);
                     }
                 }
             }
@@ -128,54 +140,45 @@ mod tests {
     #[test]
     fn csidh_easy() {
         let params = CsidhParams::CSIDH_512;
-        let p = params.p();
         let path = {
             let mut temp = [0; 74];
             temp[0] = 1;
             temp
         };
-        let start = MontyForm::zero(p);
+        let start = ConstMontyForm::ZERO;
         let public_key = csidh(params, path, start);
         assert_eq!(
             public_key,
-            MontyForm::new(
-                &Uint::from_be_hex(
-                    "53BAA451F759835A01933C76BC58C0C203A9B6B02F7F086B30C3469A8452750\
+            ConstMontyForm::new(&Uint::from_be_hex(
+                "53BAA451F759835A01933C76BC58C0C203A9B6B02F7F086B30C3469A8452750\
                     AAECA8A4F7C26BFF43876F4510F405F4D2A006635D89A42D327D9A2E8C00BF340"
-                ),
-                p
-            )
+            ))
         );
     }
 
     #[test]
     fn csidh_medium() {
         let params = CsidhParams::CSIDH_512;
-        let p = params.p();
         let path = {
             let mut temp = [0; 74];
             temp[0] = 1;
             temp[1] = 1;
             temp
         };
-        let start = MontyForm::zero(p);
+        let start = ConstMontyForm::ZERO;
         let public_key = csidh(params, path, start);
         assert_eq!(
             public_key,
-            MontyForm::new(
-                &Uint::from_be_hex(
-                    "64BB503A4BCA4A4CEF79A054740B11D35C2D1C5778FC05F5AEA1C4FA0CFE4C9\
+            ConstMontyForm::new(&Uint::from_be_hex(
+                "64BB503A4BCA4A4CEF79A054740B11D35C2D1C5778FC05F5AEA1C4FA0CFE4C9\
                     E36198514A67F220116C0F70C5511FB4163BECD5CF7347BC2DB66306AAFE6CEF0"
-                ),
-                p
-            )
+            ))
         );
     }
 
     #[test]
     fn csidh_long() {
         let params = CsidhParams::CSIDH_512;
-        let p = params.p();
         let path = {
             let mut temp = [0; 74];
             temp[0] = 1;
@@ -183,40 +186,33 @@ mod tests {
             temp[73] = 1;
             temp
         };
-        let start = MontyForm::zero(p);
+        let start = ConstMontyForm::ZERO;
         let public_key = csidh(params, path, start);
         assert_eq!(
             public_key,
-            MontyForm::new(
-                &Uint::from_be_hex(
-                    "3F0D6D05BDB550AF6459BBDBC08E40338AA2D22A4E8BD6EF1DF113688D3FD23\
+            ConstMontyForm::new(&Uint::from_be_hex(
+                "3F0D6D05BDB550AF6459BBDBC08E40338AA2D22A4E8BD6EF1DF113688D3FD23\
                     EAB8C22365A23C4702A2AAC1835B7BED06B0C8E78E5F432D6296C244812CF25B3"
-                ),
-                p
-            )
+            ))
         );
     }
 
     #[test]
     fn csidh_very_long() {
         let params = CsidhParams::CSIDH_512;
-        let p = params.p();
         let path = [
             8, 2, 9, 3, 3, 0, 7, 2, 0, 8, 1, 9, 9, 4, 0, 10, 6, 3, 10, 7, 2, 3, 1, 4, 5, 3, 9, 10,
             9, 3, 8, 5, 1, 10, 2, 4, 2, 10, 1, 1, 10, 8, 0, 9, 1, 8, 7, 6, 10, 9, 9, 4, 10, 6, 4,
             4, 2, 3, 5, 5, 5, 3, 0, 9, 6, 9, 8, 5, 5, 9, 2, 0, 3, 6,
         ];
-        let start = MontyForm::zero(p);
+        let start = ConstMontyForm::ZERO;
         let public_key = csidh(params, path, start);
         assert_eq!(
             public_key,
-            MontyForm::new(
-                &Uint::from_be_hex(
-                    "4ABA8DC557FA0A29A38A133253A99619A4EE708BD8A23284138CF6759C06B13\
+            ConstMontyForm::new(&Uint::from_be_hex(
+                "4ABA8DC557FA0A29A38A133253A99619A4EE708BD8A23284138CF6759C06B13\
                     B7CF623502EAFC1D1F847CF42A72C8807F6E9E79B56ED4318EAC92C7E93DCA1AC"
-                ),
-                p
-            )
+            ))
         );
     }
 }

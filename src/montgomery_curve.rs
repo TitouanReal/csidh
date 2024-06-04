@@ -1,54 +1,50 @@
 use crypto_bigint::{
-    modular::{MontyForm, MontyParams},
+    modular::{ConstMontyForm, ConstMontyParams},
     Uint,
 };
 use oorandom::Rand64;
 
-use crate::{limbs::LIMBS, montgomery_point::MontgomeryPoint, CsidhParams};
+use crate::{montgomery_point::MontgomeryPoint, CsidhParams};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub struct MontgomeryCurve<const N: usize> {
-    params: CsidhParams<N>,
-    a2: MontyForm<LIMBS>,
-    a24: MontyForm<LIMBS>,
+pub struct MontgomeryCurve<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> {
+    params: CsidhParams<LIMBS, N, MOD>,
+    a2: ConstMontyForm<MOD, LIMBS>,
+    a24: ConstMontyForm<MOD, LIMBS>,
 }
 
-impl<const N: usize> MontgomeryCurve<N> {
-    pub const fn field_characteristic(&self) -> MontyParams<LIMBS> {
-        self.params.p()
-    }
-
-    pub const fn a2(&self) -> MontyForm<LIMBS> {
+impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
+    MontgomeryCurve<LIMBS, N, MOD>
+{
+    pub const fn a2(&self) -> ConstMontyForm<MOD, LIMBS> {
         self.a2
     }
 
-    pub const fn a24(&self) -> MontyForm<LIMBS> {
+    pub const fn a24(&self) -> ConstMontyForm<MOD, LIMBS> {
         self.a24
     }
 
-    pub fn new(params: CsidhParams<N>, a2: MontyForm<LIMBS>) -> Self {
-        let two = MontyForm::new(&Uint::from_u32(2), params.p());
+    pub fn new(params: CsidhParams<LIMBS, N, MOD>, a2: ConstMontyForm<MOD, LIMBS>) -> Self {
+        let two = ConstMontyForm::new(&Uint::from_u32(2));
         let inverse_of_4 = params.inverse_of_4();
         let a24 = (a2 + two) * inverse_of_4;
         MontgomeryCurve { params, a2, a24 }
     }
 
-    pub fn lift(&self, x: MontyForm<LIMBS>) -> Option<MontgomeryPoint<N>> {
-        let p = self.field_characteristic();
-
+    pub fn lift(&self, x: ConstMontyForm<MOD, LIMBS>) -> Option<MontgomeryPoint<LIMBS, N, MOD>> {
         let x_square = x.square();
         let n = x * x_square + self.a2 * x_square + x;
-        if n.pow(&self.params.p_minus_1_over_2()) == MontyForm::one(p) {
+        if n.pow(&self.params.p_minus_1_over_2()) == ConstMontyForm::ONE {
             Some(MontgomeryPoint::new_reduced(*self, x))
         } else {
             None
         }
     }
 
-    pub fn random_point(&self) -> MontgomeryPoint<N> {
+    pub fn random_point(&self) -> MontgomeryPoint<LIMBS, N, MOD> {
         let mut rand = Rand64::new(816958178u128);
         loop {
-            let x = MontyForm::new(&Uint::from(rand.rand_u64()), self.field_characteristic());
+            let x = ConstMontyForm::new(&Uint::from(rand.rand_u64()));
             if let Some(point) = self.lift(x) {
                 return point;
             }
@@ -59,7 +55,7 @@ impl<const N: usize> MontgomeryCurve<N> {
         let point = self.random_point();
         let mut d = Uint::ONE;
         let sqrt_of_p_times_4 =
-            self.field_characteristic().modulus().get().sqrt() * Uint::<1>::from(4u8);
+            ConstMontyForm::<MOD, LIMBS>::ONE.retrieve().sqrt() * Uint::<1>::from(4u8);
 
         for li in self.params.lis().into_iter() {
             let mut value = Uint::from(4u32);
