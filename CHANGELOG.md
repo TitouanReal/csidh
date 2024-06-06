@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `CsidhParams::1024` and `CsidhParams::1792` are now available.
+The prime numbers used are not standard, as their is no such standard.
+
 ### Changed
 
 - `PublicKey::from` and `SharedSecret::from` now take about 20% less time.

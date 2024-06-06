@@ -215,4 +215,82 @@ mod tests {
             ))
         );
     }
+
+    #[test]
+    fn csidh_1024_1() {
+        let params = CsidhParams::CSIDH_1024;
+        let path = [
+            10, 2, 1, 10, 5, 2, 0, 9, 7, 7, 0, 0, 2, 9, 0, 5, 3, 7, 8, 2, 6, 5, 5, 8, 8, 1, 10, 5,
+            6, 2, 2, 1, 5, 5, 3, 0, 9, 10, 9, 5, 6, 7, 9, 3, 9, 5, 0, 7, 2, 1, 10, 7, 3, 9, 2, 8,
+            1, 4, 4, 3, 3, 5, 10, 10, 8, 10, 5, 0, 3, 6, 7, 3, 3, 10, 8, 10, 3, 4, 10, 3, 2, 1, 3,
+            8, 9, 7, 8, 3, 8, 9, 5, 4, 2, 0, 2, 3, 5, 10, 3, 9, 7, 4, 2, 2, 0, 9, 4, 2, 5, 3, 2, 6,
+            6, 10, 10, 6, 0, 5, 7, 4, 8, 10, 3, 6, 7, 2, 6, 4, 1, 8,
+        ];
+        let start = ConstMontyForm::ZERO;
+        let public_key = csidh(params, path, start);
+        assert_eq!(
+            public_key,
+            ConstMontyForm::new(&Uint::from_be_hex(
+                "0DB99E61C9C9E2C7F6B55574C2887BA557664416C65E0B5DFB8B8391FF74666\
+                1746FAE9967AE4A3AEE905E5C320A398F8E9987B66A9EB91BD1D749A0916C590\
+                80E7EC227B15E0F5A9BDFC41AE7927AA8A67D3289AE45FE06877D124420337CE\
+                90F6C3754186136684A533246E4A95BBB4C138342766729E79E7482E7AF355B31"
+            ))
+        );
+    }
+
+    #[test]
+    fn csidh_1024_2() {
+        let params = CsidhParams::CSIDH_1024;
+        let path = [
+            7, 4, 3, 4, 9, 1, 3, 4, 6, 4, 8, 5, 6, 10, 9, 10, 6, 4, 10, 6, 6, 3, 10, 9, 2, 0, 5, 6,
+            5, 0, 2, 4, 5, 3, 1, 2, 0, 3, 5, 0, 5, 6, 10, 9, 4, 0, 6, 4, 8, 7, 8, 4, 1, 3, 2, 1, 9,
+            2, 9, 4, 3, 6, 0, 10, 0, 6, 1, 5, 6, 8, 0, 1, 8, 4, 3, 2, 6, 8, 2, 5, 2, 9, 0, 3, 5, 7,
+            7, 8, 7, 7, 0, 4, 7, 6, 2, 6, 7, 6, 1, 8, 6, 9, 6, 3, 6, 1, 5, 8, 4, 4, 7, 3, 8, 10, 0,
+            5, 2, 5, 2, 5, 9, 10, 0, 4, 4, 9, 6, 9, 10, 9,
+        ];
+        let start = ConstMontyForm::new(&Uint::from_be_hex(
+            "0DB99E61C9C9E2C7F6B55574C2887BA557664416C65E0B5DFB8B8391FF746661746FAE9967AE4A3AEE905\
+            E5C320A398F8E9987B66A9EB91BD1D749A0916C59080E7EC227B15E0F5A9BDFC41AE7927AA8A67D3289AE4\
+            5FE06877D124420337CE90F6C3754186136684A533246E4A95BBB4C138342766729E79E7482E7AF355B31",
+        ));
+        let public_key = csidh(params, path, start);
+        assert_eq!(
+            public_key,
+            ConstMontyForm::new(&Uint::from_be_hex(
+                "0D63151E8CAE91D94BBB6E594DB8D252539CA51E37FE5E2999777F81109E884\
+                C89E5E68527B42BEEEF685EBB7FA540B5E6150B41F59619AA054AC982DF05C74\
+                5F5879BAF68C38C5B381591AC6767F8130B47A2B42DEA1466B1B065F75600C94\
+                9401E2BF6ED8F56EA203C7CD7D298E4047E7E6DF97904A0D5EB265D8BF5B6DE9C"
+            ))
+        );
+    }
+
+    #[test]
+    fn csidh_1792_1() {
+        let params = CsidhParams::CSIDH_1792;
+        let path = [
+            5, 4, 0, 2, 1, 2, 1, 9, 4, 7, 6, 2, 10, 6, 8, 6, 7, 7, 1, 4, 1, 0, 9, 9, 8, 3, 4, 10,
+            4, 9, 1, 3, 7, 5, 5, 10, 3, 3, 2, 3, 9, 5, 4, 2, 8, 8, 10, 2, 8, 0, 2, 6, 4, 7, 0, 2,
+            5, 3, 3, 8, 8, 7, 4, 4, 4, 5, 3, 5, 7, 4, 0, 5, 6, 3, 8, 2, 9, 10, 2, 7, 7, 7, 6, 9, 7,
+            4, 4, 1, 7, 7, 2, 9, 2, 9, 4, 2, 1, 0, 5, 1, 7, 9, 10, 7, 1, 7, 3, 8, 2, 3, 2, 3, 6, 7,
+            7, 3, 1, 0, 7, 2, 4, 3, 6, 0, 7, 0, 4, 6, 2, 6, 5, 6, 5, 3, 8, 7, 2, 9, 0, 0, 8, 0, 1,
+            1, 10, 6, 1, 9, 4, 9, 6, 2, 6, 2, 4, 6, 2, 10, 3, 10, 2, 4, 3, 6, 1, 4, 3, 5, 5, 10, 7,
+            3, 5, 2, 4, 5, 7, 5, 5, 0, 3, 0, 2, 0, 3, 7, 1, 6, 6, 8, 9, 6, 7, 2, 6, 0, 3, 10, 9, 9,
+            10,
+        ];
+        let start = ConstMontyForm::ZERO;
+        let public_key = csidh(params, path, start);
+        assert_eq!(
+            public_key,
+            ConstMontyForm::new(&Uint::from_be_hex(
+                "420A7CFAE08A74B5EFA6D9FEDBE6B0B96E103FD2A4FCAE8E0D5130F51DCA81AD6570D76793\
+                528E46783122A8FE4C126FF46C3385685FD841168A2297E582B8BF8CDAA8CA3A99096CB7835\
+                3249917D9C9E3D2D42B298B9D50D4969B48798C74534EF2E4880E4443B489E31CA821EC9AC8\
+                C0332688263E20DF82E072C8D0D10135F3AA586A2D85C25F19A328AEFD3449AEF76F882900E\
+                3CF149FFBBD294FDF411AE089994B90A6EE602B837E1369AF32AA5F7C1A96A2A8262EC69CAC\
+                D24DEFE873D0751CD402534514644D1DF93D5D178B41F118E34BEF52F39FC345784DD54479"
+            ))
+        );
+    }
 }

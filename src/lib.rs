@@ -2,15 +2,18 @@
 //!
 //! Pure Rust implementation of the CSIDH cryptographic algorithm for secret key exchange.
 //!
-//! As of now, only CSIDH-512 is available.
-//!
-//! # Example
-//!
-//! An example using CSIDH-512 as defined in <i>
+//! CSIDH-512 as defined in <i>
 //! <a href=https://csidh.isogeny.org/csidh-20181118.pdf>
 //! Castryck, W., Lange, T., Martindale, C., Panny,
 //! L., Renes, J.: CSIDH: An efficient post-quantum commutative group action. In: Peyrin, T.,
-//! Galbraith, S. (eds.) ASIACRYPT 2018, LNCS 11274. pp. 395–427. Springer (2018)</a></i>:
+//! Galbraith, S. (eds.) ASIACRYPT 2018, LNCS 11274. pp. 395–427. Springer (2018)</a></i>
+//! is available.
+//!
+//! Propositions for CSIDH-1024 and CSIDH-1792 are available too.
+//!
+//! # Example
+//!
+//! An example using CSIDH-512:
 //!
 //! ```
 //! use csidh::{CsidhParams, PrivateKey, PublicKey, SharedSecret};
