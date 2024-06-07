@@ -35,7 +35,6 @@ where
         }
     }
 
-    // TODO Create API not dependant on Uint - LIMBS must be transparent to the user
     /// Constructs a `PublicKey` from the foreign public key, if the key is valid.
     pub fn new<const N: usize>(
         params: CsidhParams<SAT_LIMBS, N, MOD>,
