@@ -18,12 +18,17 @@ oorandom = "11"
 
 [dev-dependencies]
 criterion = "0.5"
+iai-callgrind = "0.11"
 rand = "0.8"
 
 [[bench]]
-name = "public_key"
+name = "callgrind"
 harness = false
 
 [[bench]]
-name = "shared_secret"
+name = "public_key_time"
+harness = false
+
+[[bench]]
+name = "shared_secret_time"
 harness = false

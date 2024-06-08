@@ -3,7 +3,7 @@ use csidh::{CsidhParams, PrivateKey, PublicKey};
 use rand::Rng;
 
 pub fn criterion_benchmark(c: &mut Criterion) {
-    let mut group = c.benchmark_group("Public key");
+    let mut group = c.benchmark_group("Public key time");
     group.sample_size(10);
 
     const NUMBER_OF_KEYS: usize = 10;
