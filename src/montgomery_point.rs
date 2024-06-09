@@ -163,6 +163,51 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
         }
     }
 
+    // Returns (self + other, 2*self)
+    fn differential_add_and_double(
+        &self,
+        other: MontgomeryPoint<LIMBS, N, MOD>,
+        self_minus_other: MontgomeryPoint<LIMBS, N, MOD>,
+    ) -> (Self, Self) {
+        let x1 = self.X;
+        let z1 = self.Z;
+        let x2 = other.X;
+        let z2 = other.Z;
+        let x3 = self_minus_other.X;
+        let z3 = self_minus_other.Z;
+
+        let a = x1 + z1;
+        let b = x1 - z1;
+        let c = x2 + z2;
+        let d = x2 - z2;
+        let bc = b * c;
+        let ad = a * d;
+        let x5 = z3 * (bc + ad).square();
+        let z5 = x3 * (bc - ad).square();
+
+        let self_plus_other = Self {
+            curve: self.curve,
+            X: x5,
+            Z: z5,
+        };
+
+        let a24 = self.curve.a24();
+
+        let aa = a.square();
+        let bb = b.square();
+        let c = aa - bb;
+        let x3 = aa * bb;
+        let z3 = c * (bb + a24 * c);
+
+        let double_self = Self {
+            curve: self.curve,
+            X: x3,
+            Z: z3,
+        };
+
+        (self_plus_other, double_self)
+    }
+
     pub fn multiples(self, d: Uint<LIMBS>) -> PointMultiples<LIMBS, N, MOD> {
         PointMultiples::new(self, d)
     }
@@ -212,11 +257,9 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> Mul<Uint<
         for index in (0..other.bits() - 1).rev() {
             let bit = other.bit(index);
             if bit == ConstChoice::FALSE {
-                x1 = x1.differential_add(x0, self);
-                x0 = x0.double();
+                (x1, x0) = x0.differential_add_and_double(x1, self);
             } else {
-                x0 = x1.differential_add(x0, self);
-                x1 = x1.double();
+                (x0, x1) = x1.differential_add_and_double(x0, self);
             }
         }
 
