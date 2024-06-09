@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4] - 2024-06-09
+
 ### Added
 
 - `CsidhParams::1024` and `CsidhParams::1792` are now available.
