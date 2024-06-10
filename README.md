@@ -6,8 +6,10 @@
 Pure Rust implementation of the CSIDH cryptographic algorithm for secret key exchange.
 Provides a no_std-friendly implementation. Not constant-time yet.
 
+CSIDH-512, CSIDH-1024 and CSIDH-1792 are available. Custom parameters are also supported.
+
 The current implementation is far from being as fast as the state of the art implementations.
-The objective is to do an implementation similar to the one in "Lions and Elligators".
+Work is underway to improve its efficiency.
 
 ## License
 
