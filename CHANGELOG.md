@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `CsidhParams::1024` and `CsidhParams::1792` are now available.
-The prime numbers used are not standard, as their is no such standard.
+The prime numbers used are not standard, as there is no such standard.
 - `CsidhParams::new` is now available, allowing to create custom params.
 
 ### Changed
