@@ -141,7 +141,10 @@ impl CsidhParams<LIMBS_1792, 201, PrimeCsidh1792> {
 }
 
 impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> CsidhParams<LIMBS, N, MOD> {
-    /// Constructs custom parameters. The caller is responsible for the validity of the
+    /// Constructs custom parameters.
+    ///
+    /// <div class="warning">
+    /// The caller is responsible for the validity of the
     /// parameters. Valid parameters respect the following rules:
     ///
     /// - `lis` must be an array of mutually different prime numbers and contain the number 3.
@@ -155,6 +158,7 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> CsidhPara
     ///
     /// It is **unsound** to use invalid parameters. No validation is performed by the callee.
     /// **Use with care.**
+    /// </div>
     ///
     /// # Example
     ///
