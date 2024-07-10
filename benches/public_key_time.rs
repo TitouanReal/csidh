@@ -11,12 +11,12 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     let params = CsidhParams::CSIDH_512;
     let mut private_keys = [PrivateKey::new(params, [0; 74]); NUMBER_OF_KEYS];
 
-    for i in 0..NUMBER_OF_KEYS {
+    for private_key in private_keys.iter_mut() {
         let mut path = [0; 74];
-        for j in 0..74 {
-            path[j] = rand::thread_rng().gen_range(0..=10);
+        for element in path.iter_mut() {
+            *element = rand::thread_rng().gen_range(0..=10);
         }
-        private_keys[i] = PrivateKey::new(params, path);
+        *private_key = PrivateKey::new(params, path);
     }
 
     for (i, private_key) in private_keys.into_iter().enumerate() {

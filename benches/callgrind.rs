@@ -11,8 +11,8 @@ fn private_key<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
 ) -> PrivateKey<LIMBS, N, MOD> {
     let mut path = [0; N];
 
-    for i in 0..N {
-        path[i] = rand::thread_rng().gen_range(0..=10);
+    for element in path.iter_mut() {
+        *element = rand::thread_rng().gen_range(0..=10);
     }
 
     PrivateKey::new(params, path)
@@ -33,7 +33,7 @@ fn public_key_1<
         Output = Uint<SAT_LIMBS>,
     >,
 {
-    PublicKey::from(black_box(private_key));
+    let _ = PublicKey::from(black_box(private_key));
 }
 
 #[library_benchmark]
@@ -51,7 +51,7 @@ fn public_key_2<
         Output = Uint<SAT_LIMBS>,
     >,
 {
-    PublicKey::from(black_box(private_key));
+    let _ = PublicKey::from(black_box(private_key));
 }
 
 #[library_benchmark]
@@ -69,7 +69,7 @@ fn public_key_3<
         Output = Uint<SAT_LIMBS>,
     >,
 {
-    PublicKey::from(black_box(private_key));
+    let _ = PublicKey::from(black_box(private_key));
 }
 
 library_benchmark_group!(

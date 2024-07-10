@@ -28,7 +28,7 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
         let two = ConstMontyForm::new(&Uint::from_u32(2));
         let inverse_of_4 = params.inverse_of_4();
         let a24 = (a2 + two) * inverse_of_4;
-        MontgomeryCurve { params, a2, a24 }
+        Self { params, a2, a24 }
     }
 
     pub fn lift(&self, x: ConstMontyForm<MOD, LIMBS>) -> Option<MontgomeryPoint<LIMBS, N, MOD>> {
@@ -42,7 +42,7 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
     }
 
     pub fn random_point(&self) -> MontgomeryPoint<LIMBS, N, MOD> {
-        let mut rand = Rand64::new(816958178u128);
+        let mut rand = Rand64::new(816_958_178u128);
         loop {
             let x = ConstMontyForm::new(&Uint::from(rand.rand_u64()));
             if let Some(point) = self.lift(x) {
@@ -57,9 +57,9 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
         let sqrt_of_p_times_4 =
             ConstMontyForm::<MOD, LIMBS>::ONE.retrieve().sqrt() * Uint::<1>::from(4u8);
 
-        for li in self.params.lis().into_iter() {
+        for li in self.params.lis() {
             let mut value = Uint::from(4u32);
-            for li_2 in self.params.lis().into_iter() {
+            for li_2 in self.params.lis() {
                 if li_2 != li {
                     value = value.mul_mod(&Uint::from(li_2), &Uint::MAX);
                 }

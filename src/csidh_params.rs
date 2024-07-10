@@ -151,10 +151,10 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> CsidhPara
     /// Their product, multiplied by 4, minus 1, must be a prime number that is called p.
     /// - `p_minus_1_over_2` must be equal to (p-1)/2.
     /// - `inverse_of_4` must be the inverse of 4 in the field of cardinality p.
-    /// - The LIMBS generic given to `p_minus_1_over_2` and `inverse_of_4` must be the same, and
-    /// must be big enough to store numbers up to p. It is advised to use the smallest LIMBS number
-    /// that satisfies this condition to minimize execution time. This translates to the following:
-    ///     - LIMBS = min([0, usize::MAX]) such that 2<sup>(LIMBS * target_pointer_width)</sup> > p
+    /// - The LIMBS generic given to `p_minus_1_over_2` and `inverse_of_4` must be big enough to
+    /// store numbers up to p. It is advised to use the smallest LIMBS number that satisfies this
+    /// condition to minimize execution time. This translates to the following:
+    ///     - LIMBS = min([0, `usize::MAX`]) such that 2<sup>(LIMBS * `target_pointer_width`)</sup> > p
     ///
     /// It is **unsound** to use invalid parameters. No validation is performed by the callee.
     /// **Use with care.**
@@ -181,12 +181,13 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> CsidhPara
     /// let params = CsidhParams::new(lis, p_minus_1_over_2, inverse_of_4);
     /// # }
     /// ```
+    #[must_use]
     pub const fn new(
         lis: [u64; N],
         p_minus_1_over_2: Uint<LIMBS>,
         inverse_of_4: ConstMontyForm<MOD, LIMBS>,
     ) -> Self {
-        CsidhParams {
+        Self {
             lis,
             p_minus_1_over_2,
             inverse_of_4,

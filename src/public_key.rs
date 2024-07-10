@@ -25,8 +25,9 @@ where
     >,
 {
     /// Computes the public key associated with the given private key.
+    #[must_use]
     pub fn from<const N: usize>(private_key: PrivateKey<SAT_LIMBS, N, MOD>) -> Self {
-        PublicKey {
+        Self {
             key: csidh(
                 private_key.params(),
                 private_key.key(),
@@ -36,15 +37,16 @@ where
     }
 
     /// Constructs a `PublicKey` from the foreign public key, if the key is valid.
+    #[must_use]
     pub fn new<const N: usize>(
         params: CsidhParams<SAT_LIMBS, N, MOD>,
         key: Uint<SAT_LIMBS>,
     ) -> Option<Self> {
         let key = ConstMontyForm::new(&key);
-        if !MontgomeryCurve::new(params, key).is_supersingular() {
-            None
+        if MontgomeryCurve::new(params, key).is_supersingular() {
+            Some(Self { key })
         } else {
-            Some(PublicKey { key })
+            None
         }
     }
 

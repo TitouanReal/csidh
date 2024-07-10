@@ -17,15 +17,14 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> PrivateKe
     /// # Panics
     ///
     /// Panics if a key element is greater than 10.
+    #[must_use]
     pub const fn new(params: CsidhParams<LIMBS, N, MOD>, key: [u32; N]) -> Self {
         let mut i = 0;
         while i < N {
-            if key[i] > 10 {
-                panic!("A key element is greater than 10");
-            }
+            assert!(key[i] <= 10, "A key element must be smaller than 10");
             i += 1;
         }
-        PrivateKey { params, key }
+        Self { params, key }
     }
 
     pub(crate) const fn params(&self) -> CsidhParams<LIMBS, N, MOD> {

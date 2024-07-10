@@ -18,7 +18,7 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
     PointMultiples<LIMBS, N, MOD>
 {
     fn new(p: MontgomeryPoint<LIMBS, N, MOD>, d: Uint<LIMBS>) -> Self {
-        PointMultiples {
+        Self {
             n_times_p: MontgomeryPoint::infinity(p.curve),
             p,
             n_minus_1_times_p: MontgomeryPoint::infinity(p.curve),
@@ -76,7 +76,7 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
         curve: MontgomeryCurve<LIMBS, N, MOD>,
         X: ConstMontyForm<MOD, LIMBS>,
     ) -> Self {
-        MontgomeryPoint {
+        Self {
             curve,
             X,
             Z: ConstMontyForm::ONE,
@@ -89,11 +89,11 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
         X: ConstMontyForm<MOD, LIMBS>,
         Z: ConstMontyForm<MOD, LIMBS>,
     ) -> Self {
-        MontgomeryPoint { curve, X, Z }
+        Self { curve, X, Z }
     }
 
     const fn infinity(curve: MontgomeryCurve<LIMBS, N, MOD>) -> Self {
-        MontgomeryPoint {
+        Self {
             curve,
             X: ConstMontyForm::ONE,
             Z: ConstMontyForm::ZERO,
@@ -114,11 +114,7 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
         self.Z
     }
 
-    fn differential_add(
-        &self,
-        other: MontgomeryPoint<LIMBS, N, MOD>,
-        self_minus_other: MontgomeryPoint<LIMBS, N, MOD>,
-    ) -> Self {
+    fn differential_add(&self, other: Self, self_minus_other: Self) -> Self {
         let x1 = self.X;
         let z1 = self.Z;
         let x2 = other.X;
@@ -164,11 +160,7 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
     }
 
     // Returns (self + other, 2*self)
-    fn differential_add_and_double(
-        &self,
-        other: MontgomeryPoint<LIMBS, N, MOD>,
-        self_minus_other: MontgomeryPoint<LIMBS, N, MOD>,
-    ) -> (Self, Self) {
+    fn differential_add_and_double(&self, other: Self, self_minus_other: Self) -> (Self, Self) {
         let x1 = self.X;
         let z1 = self.Z;
         let x2 = other.X;

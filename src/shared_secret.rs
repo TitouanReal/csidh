@@ -22,11 +22,12 @@ where
     >,
 {
     /// Computes a shared secret from a foreign public key and a private key.
+    #[must_use]
     pub fn from<const N: usize>(
         foreign_public_key: PublicKey<SAT_LIMBS, MOD>,
         private_key: PrivateKey<SAT_LIMBS, N, MOD>,
     ) -> Self {
-        SharedSecret {
+        Self {
             shared_secret: csidh(
                 private_key.params(),
                 private_key.key(),

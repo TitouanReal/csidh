@@ -25,7 +25,7 @@ where
     >,
 {
     let lis = params.lis();
-    let mut e = MontgomeryCurve::new(params, start);
+    let mut curve = MontgomeryCurve::new(params, start);
 
     let mut dummies: [u32; N] = {
         let mut temp = [0; N];
@@ -42,7 +42,7 @@ where
     while !path.into_iter().all(|x| x == 0) || !dummies.into_iter().all(|x| x == 0) {
         let x = ConstMontyForm::new(&Uint::from(rand.rand_u64()));
 
-        if let Some(mut point_p) = e.lift(x) {
+        if let Some(mut point_p) = curve.lift(x) {
             point_p = point_p * k;
 
             let path_copy = path;
@@ -76,9 +76,9 @@ where
                         }
 
                         let three = ConstMontyForm::new(&Uint::from(3u32));
-                        let b = tau * (e.a2() - sigma * three);
+                        let b = tau * (curve.a2() - sigma * three);
 
-                        e = MontgomeryCurve::new(params, b);
+                        curve = MontgomeryCurve::new(params, b);
                         point_p = {
                             let x = point_p.X();
                             let z = point_p.Z();
@@ -101,7 +101,7 @@ where
                             let x_prime = x * temp_x.square();
                             let z_prime = z * temp_z.square();
 
-                            MontgomeryPoint::new(e, x_prime, z_prime)
+                            MontgomeryPoint::new(curve, x_prime, z_prime)
                         };
                         path[i] -= 1;
                     } else {
@@ -115,7 +115,7 @@ where
                         }
 
                         let three = ConstMontyForm::new(&Uint::from(3u32));
-                        let _ = tau * (e.a2() - sigma * three);
+                        let _ = tau * (curve.a2() - sigma * three);
 
                         point_p = point_p * Uint::from(*li);
                         dummies[i] -= 1;
@@ -126,11 +126,9 @@ where
                     }
                 }
             }
-        } else {
-            continue;
         }
     }
-    e.a2()
+    curve.a2()
 }
 
 #[cfg(test)]
