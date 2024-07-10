@@ -13,7 +13,7 @@ keywords = ["crypto", "elliptic-curve", "isogeny", "csidh", "quantum"]
 categories = ["cryptography", "no-std"]
 
 [dependencies]
-crypto-bigint = { version = "0.6.0-pre.12", default-features = false }
+crypto-bigint = { version = "0.6.0-rc.0", default-features = false }
 # TODO Use rand_chacha
 oorandom = "11"
 
