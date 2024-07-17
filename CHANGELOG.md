@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `CsidhParams::1024` and `CsidhParams::1792` are now available.
+- `CsidhParams::CSIDH_1024` and `CsidhParams::CSIDH_1792` are now available.
 The prime numbers used are not standard, as there is no such standard.
 - `CsidhParams::new` is now available, allowing to create custom params.
 
