@@ -17,7 +17,7 @@ pub struct PointMultiples<const LIMBS: usize, const N: usize, MOD: ConstMontyPar
 impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
     PointMultiples<LIMBS, N, MOD>
 {
-    fn new(p: MontgomeryPoint<LIMBS, N, MOD>, d: Uint<LIMBS>) -> Self {
+    const fn new(p: MontgomeryPoint<LIMBS, N, MOD>, d: Uint<LIMBS>) -> Self {
         Self {
             n_times_p: MontgomeryPoint::infinity(p.curve),
             p,
@@ -105,12 +105,12 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
     }
 
     #[allow(non_snake_case)]
-    pub fn X(&self) -> ConstMontyForm<MOD, LIMBS> {
+    pub const fn X(&self) -> ConstMontyForm<MOD, LIMBS> {
         self.X
     }
 
     #[allow(non_snake_case)]
-    pub fn Z(&self) -> ConstMontyForm<MOD, LIMBS> {
+    pub const fn Z(&self) -> ConstMontyForm<MOD, LIMBS> {
         self.Z
     }
 
@@ -200,7 +200,7 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
         (self_plus_other, double_self)
     }
 
-    pub fn multiples(self, d: Uint<LIMBS>) -> PointMultiples<LIMBS, N, MOD> {
+    pub const fn multiples(self, d: Uint<LIMBS>) -> PointMultiples<LIMBS, N, MOD> {
         PointMultiples::new(self, d)
     }
 }
