@@ -5,7 +5,7 @@ use crypto_bigint::modular::ConstMontyParams;
 use crate::csidh_params::CsidhParams;
 
 /// A private key for the CSIDH key exchange.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug)]
 pub struct PrivateKey<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> {
     params: CsidhParams<LIMBS, N, MOD>,
     key: [u32; N],
