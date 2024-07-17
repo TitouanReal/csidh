@@ -65,17 +65,18 @@ where
                 let point_k = point_p * m;
 
                 if !point_k.is_infinity() {
+                    let mut tau = ConstMontyForm::ONE;
+                    let mut sigma = ConstMontyForm::ZERO;
+
+                    for multiple in point_k.multiples(Uint::from(*li - 1)) {
+                        let x = multiple.x();
+                        tau *= x;
+                        sigma = sigma + x - x.inv().unwrap();
+                    }
+
+                    let three = ConstMontyForm::new(&Uint::from(3u32));
+
                     if path[i] > 0 {
-                        let mut tau = ConstMontyForm::ONE;
-                        let mut sigma = ConstMontyForm::ZERO;
-
-                        for multiple in point_k.multiples(Uint::from(*li - 1)) {
-                            let x = multiple.x();
-                            tau *= x;
-                            sigma = sigma + x - x.inv().unwrap();
-                        }
-
-                        let three = ConstMontyForm::new(&Uint::from(3u32));
                         let b = tau * (curve.a2() - sigma * three);
 
                         curve = MontgomeryCurve::new(params, b);
@@ -105,16 +106,6 @@ where
                         };
                         path[i] -= 1;
                     } else {
-                        let mut tau = ConstMontyForm::ONE;
-                        let mut sigma = ConstMontyForm::ZERO;
-
-                        for multiple in point_k.multiples(Uint::from(*li - 1)) {
-                            let x = multiple.x();
-                            tau *= x;
-                            sigma = sigma + x - x.inv().unwrap();
-                        }
-
-                        let three = ConstMontyForm::new(&Uint::from(3u32));
                         let _ = tau * (curve.a2() - sigma * three);
 
                         point_p = point_p * Uint::from(*li);
