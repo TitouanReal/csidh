@@ -1,5 +1,3 @@
-use core::fmt::{self, Display};
-
 use crypto_bigint::modular::ConstMontyParams;
 
 use crate::csidh_params::CsidhParams;
@@ -33,16 +31,5 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> PrivateKe
 
     pub(crate) const fn key(&self) -> [u32; N] {
         self.key
-    }
-}
-
-impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> Display
-    for PrivateKey<LIMBS, N, MOD>
-{
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        for i in 0..N {
-            write!(f, "({}:{}), ", self.params.lis()[i], self.key[i])?;
-        }
-        Ok(())
     }
 }

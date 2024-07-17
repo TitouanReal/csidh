@@ -1,5 +1,3 @@
-use core::fmt::{self, Display};
-
 use crypto_bigint::{
     modular::{BernsteinYangInverter, ConstMontyForm, ConstMontyParams},
     Odd, PrecomputeInverter, Uint,
@@ -52,11 +50,5 @@ where
 
     pub(crate) const fn key(&self) -> ConstMontyForm<MOD, SAT_LIMBS> {
         self.key
-    }
-}
-
-impl<const LIMBS: usize, MOD: ConstMontyParams<LIMBS>> Display for PublicKey<LIMBS, MOD> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.key.retrieve())
     }
 }

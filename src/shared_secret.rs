@@ -1,5 +1,3 @@
-use core::fmt::{self, Display};
-
 use crypto_bigint::{
     modular::{BernsteinYangInverter, ConstMontyForm, ConstMontyParams},
     Odd, PrecomputeInverter, Uint,
@@ -34,11 +32,5 @@ where
                 foreign_public_key.key(),
             ),
         }
-    }
-}
-
-impl<const LIMBS: usize, MOD: ConstMontyParams<LIMBS>> Display for SharedSecret<LIMBS, MOD> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.shared_secret.retrieve())
     }
 }
