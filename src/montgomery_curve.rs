@@ -6,7 +6,7 @@ use oorandom::Rand64;
 
 use crate::{montgomery_point::MontgomeryPoint, CsidhParams};
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct MontgomeryCurve<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> {
     params: CsidhParams<LIMBS, N, MOD>,
     a2: ConstMontyForm<MOD, LIMBS>,

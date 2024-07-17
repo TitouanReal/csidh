@@ -11,7 +11,7 @@ use crate::{
 };
 
 /// A public key for the CSIDH key exchange.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct PublicKey<const LIMBS: usize, MOD: ConstMontyParams<LIMBS>> {
     key: ConstMontyForm<MOD, LIMBS>,
 }

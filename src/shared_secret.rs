@@ -8,7 +8,7 @@ use crypto_bigint::{
 use crate::{csidh::csidh, private_key::PrivateKey, public_key::PublicKey};
 
 /// A shared secret created with the CSIDH key exchange.
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct SharedSecret<const LIMBS: usize, MOD: ConstMontyParams<LIMBS>> {
     shared_secret: ConstMontyForm<MOD, LIMBS>,
 }

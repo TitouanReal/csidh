@@ -5,7 +5,7 @@ use crypto_bigint::{
 };
 
 /// Parameters of the CSIDH key exchange.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct CsidhParams<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> {
     lis: [u64; N],
     p_minus_1_over_2: Uint<LIMBS>,
