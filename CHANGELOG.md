@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Impl `Eq` for `CsidhParams`, `PublicKey` and `SharedSecret`.
+
+### Removed
+
+- Remove impl `PartialEq` for `PrivateKey`.
+- Remove impl `Display` for `PrivateKey`, `PublicKey` and `SharedSecret`.
+
 ## [0.4] - 2024-06-09
 
 ### Added
