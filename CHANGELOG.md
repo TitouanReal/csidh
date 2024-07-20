@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Impl `Eq` for `CsidhParams`, `PublicKey` and `SharedSecret`.
 
+### Changed
+
+- Require `rng: &mut impl CryptoRngCore` parameter for `PublicKey::from`, `PublicKey::new` and
+`SharedSecret::from` instead of using internal non-CSRNG.
+
 ### Removed
 
 - Remove impl `PartialEq` for `PrivateKey`.
