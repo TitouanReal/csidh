@@ -1,8 +1,8 @@
 use crypto_bigint::{
     modular::{ConstMontyForm, ConstMontyParams},
-    Uint,
+    rand_core::CryptoRngCore,
+    Random, Uint,
 };
-use oorandom::Rand64;
 
 use crate::{montgomery_point::MontgomeryPoint, CsidhParams};
 
@@ -41,18 +41,17 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
         }
     }
 
-    pub fn random_point(&self) -> MontgomeryPoint<LIMBS, N, MOD> {
-        let mut rand = Rand64::new(816_958_178u128);
+    pub fn random_point(&self, rng: &mut impl CryptoRngCore) -> MontgomeryPoint<LIMBS, N, MOD> {
         loop {
-            let x = ConstMontyForm::new(&Uint::from(rand.rand_u64()));
+            let x = ConstMontyForm::new(&Uint::random(rng));
             if let Some(point) = self.lift(x) {
                 return point;
             }
         }
     }
 
-    pub fn is_supersingular(&self) -> bool {
-        let point = self.random_point();
+    pub fn is_supersingular(&self, rng: &mut impl CryptoRngCore) -> bool {
+        let point = self.random_point(rng);
         let mut d = Uint::ONE;
         let sqrt_of_p_times_4 =
             ConstMontyForm::<MOD, LIMBS>::ONE.retrieve().sqrt() * Uint::<1>::from(4u8);
@@ -76,6 +75,6 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
                 return true;
             }
         }
-        self.is_supersingular()
+        self.is_supersingular(rng)
     }
 }

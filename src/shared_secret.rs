@@ -1,5 +1,6 @@
 use crypto_bigint::{
     modular::{BernsteinYangInverter, ConstMontyForm, ConstMontyParams},
+    rand_core::CryptoRngCore,
     Odd, PrecomputeInverter, Uint,
 };
 
@@ -24,12 +25,14 @@ where
     pub fn from<const N: usize>(
         foreign_public_key: PublicKey<SAT_LIMBS, MOD>,
         private_key: PrivateKey<SAT_LIMBS, N, MOD>,
+        rng: &mut impl CryptoRngCore,
     ) -> Self {
         Self {
             shared_secret: csidh(
                 private_key.params(),
                 private_key.key(),
                 foreign_public_key.key(),
+                rng,
             ),
         }
     }

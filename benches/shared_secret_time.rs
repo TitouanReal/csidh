@@ -1,6 +1,6 @@
 use criterion::{criterion_group, criterion_main, Criterion};
 use csidh::{CsidhParams, PrivateKey, PublicKey};
-use rand::Rng;
+use rand::{rngs::StdRng, Rng, SeedableRng};
 
 pub fn criterion_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("Shared secret");
@@ -19,9 +19,11 @@ pub fn criterion_benchmark(c: &mut Criterion) {
         *private_key = PrivateKey::new(params, path);
     }
 
+    let mut rng = StdRng::from_rng(rand::thread_rng()).unwrap();
+
     for (i, private_key) in private_keys.into_iter().enumerate() {
         group.bench_with_input(format!("{}", i), &private_key, |b, &private_key| {
-            b.iter(|| PublicKey::from(private_key))
+            b.iter(|| PublicKey::from(private_key, &mut rng))
         });
     }
     group.finish();

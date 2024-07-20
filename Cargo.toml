@@ -12,10 +12,10 @@ license = "Apache-2.0 OR MIT"
 keywords = ["crypto", "elliptic-curve", "isogeny", "csidh", "quantum"]
 categories = ["cryptography", "no-std"]
 
-[dependencies]
-crypto-bigint = { version = "0.6.0-rc.0", default-features = false }
-# TODO Use rand_chacha
-oorandom = "11"
+[dependencies.crypto-bigint]
+version = "0.6.0-rc.0"
+default-features = false
+features = ["rand_core"]
 
 [dev-dependencies]
 criterion = "0.5"

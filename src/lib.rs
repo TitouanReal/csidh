@@ -19,6 +19,7 @@
 //! use csidh::{CsidhParams, PrivateKey, PublicKey, SharedSecret};
 //!
 //! let params = CsidhParams::CSIDH_512;
+//! let mut rng = rand::thread_rng();
 //!
 //! // Alice
 //! let alice_path = [
@@ -27,7 +28,7 @@
 //!     3, 5, 5, 5, 3, 0, 9, 6, 9, 8, 5, 5, 9, 2, 0, 3, 6,
 //! ];
 //! let alice_private_key = PrivateKey::new(params, alice_path);
-//! let alice_public_key = PublicKey::from(alice_private_key);
+//! let alice_public_key = PublicKey::from(alice_private_key, &mut rng);
 //!
 //! // Bob
 //! let bob_path = [
@@ -36,11 +37,11 @@
 //!     1, 4, 8, 10, 6, 0, 7, 1, 2, 7, 2, 0, 9, 9, 0, 6,
 //! ];
 //! let bob_private_key = PrivateKey::new(params, bob_path);
-//! let bob_public_key = PublicKey::from(bob_private_key);
+//! let bob_public_key = PublicKey::from(bob_private_key, &mut rng);
 //!
 //! // Shared secret
-//! let alice_shared_secret = SharedSecret::from(bob_public_key, alice_private_key);
-//! let bob_shared_secret = SharedSecret::from(alice_public_key, bob_private_key);
+//! let alice_shared_secret = SharedSecret::from(bob_public_key, alice_private_key, &mut rng);
+//! let bob_shared_secret = SharedSecret::from(alice_public_key, bob_private_key, &mut rng);
 //! assert_eq!(alice_shared_secret, bob_shared_secret);
 //! ```
 

@@ -182,6 +182,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf4d6fbc60a5516ff886af2c5994fb2bdfa6fbe2168468100bd87e6c09caf08c"
 dependencies = [
  "num-traits",
+ "rand_core",
  "subtle",
 ]
 
@@ -192,7 +193,6 @@ dependencies = [
  "criterion",
  "crypto-bigint",
  "iai-callgrind",
- "oorandom",
  "rand",
 ]
 

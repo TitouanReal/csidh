@@ -33,7 +33,7 @@ fn public_key_1<
         Output = Uint<SAT_LIMBS>,
     >,
 {
-    let _ = PublicKey::from(black_box(private_key));
+    let _ = PublicKey::from(black_box(private_key), &mut rand::thread_rng());
 }
 
 #[library_benchmark]
@@ -51,7 +51,7 @@ fn public_key_2<
         Output = Uint<SAT_LIMBS>,
     >,
 {
-    let _ = PublicKey::from(black_box(private_key));
+    let _ = PublicKey::from(black_box(private_key), &mut rand::thread_rng());
 }
 
 #[library_benchmark]
@@ -69,7 +69,7 @@ fn public_key_3<
         Output = Uint<SAT_LIMBS>,
     >,
 {
-    let _ = PublicKey::from(black_box(private_key));
+    let _ = PublicKey::from(black_box(private_key), &mut rand::thread_rng());
 }
 
 library_benchmark_group!(

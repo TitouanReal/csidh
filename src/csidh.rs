@@ -1,8 +1,8 @@
 use crypto_bigint::{
     modular::{BernsteinYangInverter, ConstMontyForm, ConstMontyParams},
-    Odd, PrecomputeInverter, Uint,
+    rand_core::CryptoRngCore,
+    Odd, PrecomputeInverter, Random, Uint,
 };
-use oorandom::Rand64;
 
 use crate::{
     csidh_params::CsidhParams, montgomery_curve::MontgomeryCurve, montgomery_point::MontgomeryPoint,
@@ -17,6 +17,7 @@ pub fn csidh<
     params: CsidhParams<SAT_LIMBS, N, MOD>,
     mut path: [u32; N],
     start: ConstMontyForm<MOD, SAT_LIMBS>,
+    rng: &mut impl CryptoRngCore,
 ) -> ConstMontyForm<MOD, SAT_LIMBS>
 where
     Odd<Uint<SAT_LIMBS>>: PrecomputeInverter<
@@ -37,10 +38,8 @@ where
 
     let mut k = Uint::from(4u32);
 
-    let mut rand = Rand64::new(454_621u128);
-
     while !path.into_iter().all(|x| x == 0) || !dummies.into_iter().all(|x| x == 0) {
-        let x = ConstMontyForm::new(&Uint::from(rand.rand_u64()));
+        let x = ConstMontyForm::new(&Uint::random(rng));
 
         if let Some(mut point_p) = curve.lift(x) {
             point_p = point_p * k;
@@ -135,7 +134,7 @@ mod tests {
             temp
         };
         let start = ConstMontyForm::ZERO;
-        let public_key = csidh(params, path, start);
+        let public_key = csidh(params, path, start, &mut rand::thread_rng());
         assert_eq!(
             public_key,
             ConstMontyForm::new(&Uint::from_be_hex(
@@ -155,7 +154,7 @@ mod tests {
             temp
         };
         let start = ConstMontyForm::ZERO;
-        let public_key = csidh(params, path, start);
+        let public_key = csidh(params, path, start, &mut rand::thread_rng());
         assert_eq!(
             public_key,
             ConstMontyForm::new(&Uint::from_be_hex(
@@ -176,7 +175,7 @@ mod tests {
             temp
         };
         let start = ConstMontyForm::ZERO;
-        let public_key = csidh(params, path, start);
+        let public_key = csidh(params, path, start, &mut rand::thread_rng());
         assert_eq!(
             public_key,
             ConstMontyForm::new(&Uint::from_be_hex(
@@ -195,7 +194,7 @@ mod tests {
             4, 2, 3, 5, 5, 5, 3, 0, 9, 6, 9, 8, 5, 5, 9, 2, 0, 3, 6,
         ];
         let start = ConstMontyForm::ZERO;
-        let public_key = csidh(params, path, start);
+        let public_key = csidh(params, path, start, &mut rand::thread_rng());
         assert_eq!(
             public_key,
             ConstMontyForm::new(&Uint::from_be_hex(
@@ -216,7 +215,7 @@ mod tests {
             6, 10, 10, 6, 0, 5, 7, 4, 8, 10, 3, 6, 7, 2, 6, 4, 1, 8,
         ];
         let start = ConstMontyForm::ZERO;
-        let public_key = csidh(params, path, start);
+        let public_key = csidh(params, path, start, &mut rand::thread_rng());
         assert_eq!(
             public_key,
             ConstMontyForm::new(&Uint::from_be_hex(
@@ -243,7 +242,7 @@ mod tests {
             E5C320A398F8E9987B66A9EB91BD1D749A0916C59080E7EC227B15E0F5A9BDFC41AE7927AA8A67D3289AE4\
             5FE06877D124420337CE90F6C3754186136684A533246E4A95BBB4C138342766729E79E7482E7AF355B31",
         ));
-        let public_key = csidh(params, path, start);
+        let public_key = csidh(params, path, start, &mut rand::thread_rng());
         assert_eq!(
             public_key,
             ConstMontyForm::new(&Uint::from_be_hex(
@@ -269,7 +268,7 @@ mod tests {
             10,
         ];
         let start = ConstMontyForm::ZERO;
-        let public_key = csidh(params, path, start);
+        let public_key = csidh(params, path, start, &mut rand::thread_rng());
         assert_eq!(
             public_key,
             ConstMontyForm::new(&Uint::from_be_hex(

@@ -1,5 +1,6 @@
 use crypto_bigint::{
     modular::{BernsteinYangInverter, ConstMontyForm, ConstMontyParams},
+    rand_core::CryptoRngCore,
     Odd, PrecomputeInverter, Uint,
 };
 
@@ -24,12 +25,16 @@ where
 {
     /// Computes the public key associated with the given private key.
     #[must_use]
-    pub fn from<const N: usize>(private_key: PrivateKey<SAT_LIMBS, N, MOD>) -> Self {
+    pub fn from<const N: usize>(
+        private_key: PrivateKey<SAT_LIMBS, N, MOD>,
+        rng: &mut impl CryptoRngCore,
+    ) -> Self {
         Self {
             key: csidh(
                 private_key.params(),
                 private_key.key(),
                 ConstMontyForm::ZERO,
+                rng,
             ),
         }
     }
@@ -39,9 +44,10 @@ where
     pub fn new<const N: usize>(
         params: CsidhParams<SAT_LIMBS, N, MOD>,
         key: Uint<SAT_LIMBS>,
+        rng: &mut impl CryptoRngCore,
     ) -> Option<Self> {
         let key = ConstMontyForm::new(&key);
-        if MontgomeryCurve::new(params, key).is_supersingular() {
+        if MontgomeryCurve::new(params, key).is_supersingular(rng) {
             Some(Self { key })
         } else {
             None
