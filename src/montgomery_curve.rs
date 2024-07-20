@@ -53,8 +53,7 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
     pub fn is_supersingular(&self, rng: &mut impl CryptoRngCore) -> bool {
         let point = self.random_point(rng);
         let mut d = Uint::ONE;
-        let sqrt_of_p_times_4 =
-            ConstMontyForm::<MOD, LIMBS>::ONE.retrieve().sqrt() * Uint::<1>::from(4u8);
+        let sqrt_of_p_times_4 = self.params.sqrt_of_p_times_4();
 
         for li in self.params.lis() {
             let mut value = Uint::from(4u32);
@@ -65,10 +64,10 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
             }
 
             let qi = point * value;
-            if (qi * Uint::from(li)).is_infinity() {
+            if !(qi * Uint::from(li)).is_infinity() {
                 return false;
             }
-            if qi.is_infinity() {
+            if !qi.is_infinity() {
                 d = d.mul_mod(&Uint::from(li), &Uint::MAX);
             }
             if d > sqrt_of_p_times_4 {

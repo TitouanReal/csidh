@@ -10,6 +10,7 @@ pub struct CsidhParams<const LIMBS: usize, const N: usize, MOD: ConstMontyParams
     lis: [u64; N],
     p_minus_1_over_2: Uint<LIMBS>,
     inverse_of_4: ConstMontyForm<MOD, LIMBS>,
+    sqrt_of_p_times_4: Uint<LIMBS>,
 }
 
 #[cfg(target_pointer_width = "32")]
@@ -38,13 +39,17 @@ impl CsidhParams<LIMBS_512, 74, PrimeCsidh512> {
             181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271,
             277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 587,
         ],
+        p_minus_1_over_2: Uint::from_be_hex(
+            "32da4747ba07c4dffe455868af1f26255a16841d76e446212d7dfe63499164e\
+            6d3d56362b3f9aa83a8b398660f85a792e1390dfa2bd6541a8dc0dc8299e3643d",
+        ),
         inverse_of_4: ConstMontyForm::new(&Uint::from_be_hex(
             "196d23a3dd03e26fff22ac34578f9312ad0b420ebb72231096beff31a4c8b27\
             369eab1b159fcd541d459cc3307c2d3c9709c86fd15eb2a0d46e06e414cf1b21f",
         )),
-        p_minus_1_over_2: Uint::from_be_hex(
-            "32da4747ba07c4dffe455868af1f26255a16841d76e446212d7dfe63499164e\
-            6d3d56362b3f9aa83a8b398660f85a792e1390dfa2bd6541a8dc0dc8299e3643d",
+        sqrt_of_p_times_4: Uint::from_be_hex(
+            "000000000000000000000000000000000000000000000000000000000000000\
+            2856f1399d91d6592142b9541e59682cd38d0cd95f8636a5617895e71e1a20b40",
         ),
     };
 }
@@ -75,15 +80,20 @@ impl CsidhParams<LIMBS_1024, 130, PrimeCsidh1024> {
             601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701,
             709, 719, 727, 863, 947,
         ],
+        p_minus_1_over_2: Uint::from_be_hex(
+            "0865911d704be78d290b38147936c7c368785088758573a15907a9a7331d609ef06c17b647d0afb790d51\
+            5f1f09440acf2008d7927fbe3b644df432518b06378178692bb2321251a311e4996aeba52e01748c13caaa\
+            443d8caa32713fb82eeed4be66b2fda1d5b453aa6ee82f4bb3224f0d303f5863192342cbecc2a9794e0c5",
+        ),
         inverse_of_4: ConstMontyForm::new(&Uint::from_be_hex(
             "0432c88eb825f3c694859c0a3c9b63e1b43c28443ac2b9d0ac83d4d3998eb04f78360bdb23e857dbc86a8\
             af8f84a2056790046bc93fdf1db226fa1928c5831bc0bc3495d9190928d188f24cb575d29700ba4609e555\
             221ec65519389fdc17776a5f33597ed0eada29d5377417a5d9912786981fac318c91a165f66154bca7063",
         )),
-        p_minus_1_over_2: Uint::from_be_hex(
-            "0865911d704be78d290b38147936c7c368785088758573a15907a9a7331d609ef06c17b647d0afb790d51\
-            5f1f09440acf2008d7927fbe3b644df432518b06378178692bb2321251a311e4996aeba52e01748c13caaa\
-            443d8caa32713fb82eeed4be66b2fda1d5b453aa6ee82f4bb3224f0d303f5863192342cbecc2a9794e0c5",
+        sqrt_of_p_times_4: Uint::from_be_hex(
+            "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000\
+            0000000000000000000000000000000000000000001064567fe71623dd3d0453e10c2330470580e0f1f224\
+            d70507fc43905ea5cc3705f413e8c164007037e08e352ae20804b82c7ef4aff3cfc5df5a41fa2c58c6fd4",
         ),
     };
 }
@@ -121,6 +131,14 @@ impl CsidhParams<LIMBS_1792, 201, PrimeCsidh1792> {
             1193, 1201, 1213, 1217, 1223, 1229, 1231, 1237, 1249, 1259, 1277, 1279, 1283, 1289,
             1291, 1301, 1657,
         ],
+        p_minus_1_over_2: Uint::from_be_hex(
+            "641a5cad421f4c8af8c7d30ddd7644cd32775534d2fe5012835f2c45c11f94430168dfac16\
+            5f046e5dccb3aaa35180d098086a07691a44dc4800aebf0da201271ab66bc28c58b002d2667\
+            560bcb22245629a1af146e3b6499ebaf18ce0fed1bee4645fbf8b8836f79dc82432467d3a24\
+            f32f044d70fd1d5ae19aff809615e86374c442e0c22c7b56caf450a17ca8e680c036efb1f34\
+            ae3820f34ee96d36a47e171d33f720681cc3c55753d5fd24da0a4b45142d2b8a25290865e54\
+            b8883a4bd6d3bbcb9e1e98b9f8b7ca0971ec14e92d8bd5b8aa160ec17e629a5b9555d88df1",
+        ),
         inverse_of_4: ConstMontyForm::new(&Uint::from_be_hex(
             "320d2e56a10fa6457c63e986eebb2266993baa9a697f280941af9622e08fca2180b46fd60b\
             2f82372ee659d551a8c0684c043503b48d226e2400575f86d100938d5b35e1462c580169333\
@@ -129,13 +147,13 @@ impl CsidhParams<LIMBS_1792, 201, PrimeCsidh1792> {
             571c1079a774b69b523f0b8e99fb90340e61e2aba9eafe926d0525a28a1695c512948432f2a\
             5c441d25eb69dde5cf0f4c5cfc5be504b8f60a7496c5eadc550b0760bf314d2dcaaaec46f9",
         )),
-        p_minus_1_over_2: Uint::from_be_hex(
-            "641a5cad421f4c8af8c7d30ddd7644cd32775534d2fe5012835f2c45c11f94430168dfac16\
-            5f046e5dccb3aaa35180d098086a07691a44dc4800aebf0da201271ab66bc28c58b002d2667\
-            560bcb22245629a1af146e3b6499ebaf18ce0fed1bee4645fbf8b8836f79dc82432467d3a24\
-            f32f044d70fd1d5ae19aff809615e86374c442e0c22c7b56caf450a17ca8e680c036efb1f34\
-            ae3820f34ee96d36a47e171d33f720681cc3c55753d5fd24da0a4b45142d2b8a25290865e54\
-            b8883a4bd6d3bbcb9e1e98b9f8b7ca0971ec14e92d8bd5b8aa160ec17e629a5b9555d88df1",
+        sqrt_of_p_times_4: Uint::from_be_hex(
+            "00000000000000000000000000000000000000000000000000000000000000000000000000\
+            000000000000000000000000000000000000000000000000000000000000000000000000000\
+            000000000000000000000000000000000000000000000000000000000000000000000000003\
+            8990052e73e9fb137778a2c8553d92bbe1abf6a3dbc42958ab43df8593c5c3a283e612ce65a\
+            b290281ee56969fe3a0cd77a34926f2b21475b400ad2da4aa23668cf988de4f99ff9aa0ab4b\
+            ca581ea99cfdf4a7cf03d270dbc49ccbb20d94d84eae8c9ed15e611d72f0bd5782773c19f7",
         ),
     };
 }
@@ -151,10 +169,12 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> CsidhPara
     /// Their product, multiplied by 4, minus 1, must be a prime number that is called p.
     /// - `p_minus_1_over_2` must be equal to (p-1)/2.
     /// - `inverse_of_4` must be the inverse of 4 in the field of cardinality p.
-    /// - The LIMBS generic given to `p_minus_1_over_2` and `inverse_of_4` must be big enough to
-    /// store numbers up to p. It is advised to use the smallest LIMBS number that satisfies this
-    /// condition to minimize execution time. This translates to the following:
-    ///     - LIMBS = min([0, `usize::MAX`]) such that 2<sup>(LIMBS * `target_pointer_width`)</sup> > p
+    /// - `sqrt_of_p_times_4` must be (sqrt(p) * 4) rounded up.
+    /// - The LIMBS generic given to `p_minus_1_over_2`, `inverse_of_4` and `sqrt_of_p_times_4` must
+    /// be big enough to store numbers up to p. It is advised to use the smallest LIMBS number that
+    /// satisfies this condition to minimize execution time. This translates to the following:
+    ///     - LIMBS = min([0, `usize::MAX`]) such that
+    ///     2<sup>(LIMBS * `target_pointer_width`)</sup> > p
     ///
     /// It is **unsound** to use invalid parameters. No validation is performed by the callee.
     /// **Use with care.**
@@ -177,8 +197,9 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> CsidhPara
     /// let p_minus_1_over_2 = Uint::from(209u32);
     /// let inverse_of_4: ConstMontyForm<Prime419, LIMBS_3_5_7> =
     ///     ConstMontyForm::new(&Uint::from(105u32));
+    /// let sqrt_of_p_times_4 = Uint::from(82u32);
     ///
-    /// let params = CsidhParams::new(lis, p_minus_1_over_2, inverse_of_4);
+    /// let params = CsidhParams::new(lis, p_minus_1_over_2, inverse_of_4, sqrt_of_p_times_4);
     /// # }
     /// ```
     #[must_use]
@@ -186,11 +207,13 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> CsidhPara
         lis: [u64; N],
         p_minus_1_over_2: Uint<LIMBS>,
         inverse_of_4: ConstMontyForm<MOD, LIMBS>,
+        sqrt_of_p_times_4: Uint<LIMBS>,
     ) -> Self {
         Self {
             lis,
             p_minus_1_over_2,
             inverse_of_4,
+            sqrt_of_p_times_4,
         }
     }
 
@@ -204,5 +227,9 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> CsidhPara
 
     pub(crate) const fn inverse_of_4(self) -> ConstMontyForm<MOD, LIMBS> {
         self.inverse_of_4
+    }
+
+    pub(crate) const fn sqrt_of_p_times_4(self) -> Uint<LIMBS> {
+        self.sqrt_of_p_times_4
     }
 }
