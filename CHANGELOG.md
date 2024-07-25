@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Require `rng: &mut impl CryptoRngCore` parameter for `PublicKey::from`, `PublicKey::new` and
 `SharedSecret::from` instead of using internal non-CSRNG.
+- Require `sqrt_of_p_times_4: Uint<LIMBS>` parameter for `CsidhParams::new`.
+- Fix public key validation in `PublicKey::new`. This function would enter an infinite loop. It now
+behaves correctly.
 
 ### Removed
 
