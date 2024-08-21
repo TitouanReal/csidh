@@ -24,10 +24,11 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
         self.a24
     }
 
-    pub fn new(params: CsidhParams<LIMBS, N, MOD>, a2: ConstMontyForm<MOD, LIMBS>) -> Self {
+    pub const fn new(params: CsidhParams<LIMBS, N, MOD>, a2: ConstMontyForm<MOD, LIMBS>) -> Self {
         let two = ConstMontyForm::new(&Uint::from_u32(2));
         let inverse_of_4 = params.inverse_of_4();
-        let a24 = (a2 + two) * inverse_of_4;
+        // TODO use operators once feature(const_trait_impl) is stabilized
+        let a24 = (a2.add(&two)).mul(&inverse_of_4);
         Self { params, a2, a24 }
     }
 
