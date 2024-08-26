@@ -1,6 +1,6 @@
 use crypto_bigint::modular::ConstMontyParams;
 
-use crate::csidh_params::CsidhParams;
+use crate::csidh_params::{csidh_1024, csidh_1792, csidh_512, CsidhParams};
 
 /// A private key for the CSIDH key exchange.
 #[derive(Clone, Copy, Debug)]
@@ -33,3 +33,14 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> PrivateKe
         self.key
     }
 }
+
+/// A helper type for const CSIDH-512 private key declaration.
+pub type PrivateKeyCsidh512 = PrivateKey<{ csidh_512::LIMBS }, { csidh_512::N }, csidh_512::MOD>;
+
+/// A helper type for const CSIDH-1024 private key declaration.
+pub type PrivateKeyCsidh1024 =
+    PrivateKey<{ csidh_1024::LIMBS }, { csidh_1024::N }, csidh_1024::MOD>;
+
+/// A helper type for const CSIDH-1792 private key declaration.
+pub type PrivateKeyCsidh1792 =
+    PrivateKey<{ csidh_1792::LIMBS }, { csidh_1792::N }, csidh_1792::MOD>;
