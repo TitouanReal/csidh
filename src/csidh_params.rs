@@ -27,15 +27,16 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> CsidhPara
     /// parameters. Valid parameters respect the following rules:
     ///
     /// - `lis` must be an array of mutually different prime numbers and contain the number 3.
-    /// Their product, multiplied by 4, minus 1, must be a prime number that is called p.
+    ///   Their product, multiplied by 4, minus 1, must be a prime number that is called p.
     /// - `p_minus_1_over_2` must be equal to (p-1)/2.
     /// - `inverse_of_4` must be the inverse of 4 in the field of cardinality p.
     /// - `sqrt_of_p_times_4` must be (sqrt(p) * 4) rounded up.
     /// - The LIMBS generic given to `p_minus_1_over_2`, `inverse_of_4` and `sqrt_of_p_times_4` must
-    /// be big enough to store numbers up to p. It is advised to use the smallest LIMBS number that
-    /// satisfies this condition to minimize execution time. This translates to the following:
+    ///   be big enough to store numbers up to p. It is advised to use the smallest LIMBS number
+    ///   that satisfies this condition to minimize execution time. This translates to the
+    ///   following:
     ///     - LIMBS = min([0, `usize::MAX`]) such that
-    ///     2<sup>(LIMBS * `target_pointer_width`)</sup> > p
+    ///       2<sup>(LIMBS * `target_pointer_width`)</sup> > p
     ///
     /// It is **unsound** to use invalid parameters. No validation is performed by the callee.
     /// **Use with care.**
