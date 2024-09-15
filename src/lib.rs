@@ -16,7 +16,7 @@
 //! An example using CSIDH-512:
 //!
 //! ```
-//! use csidh::{csidh_512, CsidhParams, PrivateKey, PrivateKeyCsidh512, PublicKey, SharedSecret};
+//! use csidh::{CsidhParams, PrivateKey, PrivateKeyCsidh512, PublicKey, SharedSecret};
 //!
 //! let mut rng = rand::thread_rng();
 //!
@@ -62,7 +62,7 @@ mod shared_secret;
 #[doc(no_inline)]
 pub use crypto_bigint::{impl_modulus, modular::ConstMontyForm, Uint};
 
-pub use csidh_params::{csidh_1024, csidh_1792, csidh_512, CsidhParams};
+pub use csidh_params::CsidhParams;
 pub use private_key::{PrivateKey, PrivateKeyCsidh1024, PrivateKeyCsidh1792, PrivateKeyCsidh512};
 pub use public_key::PublicKey;
 pub use shared_secret::SharedSecret;

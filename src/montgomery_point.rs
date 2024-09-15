@@ -261,7 +261,7 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> Mul<Uint<
 
 #[cfg(test)]
 mod tests {
-    use crate::{csidh_512, CsidhParams};
+    use crate::{csidh_params::csidh_512, CsidhParams};
 
     use super::*;
 
