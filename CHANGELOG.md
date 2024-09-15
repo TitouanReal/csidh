@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Impl `Eq` for `CsidhParams`, `PublicKey` and `SharedSecret`.
+- Make `MontgomeryCurve::new` `const`.
+- Add `private_key::{PrivateKeyCsidh512, PrivateKeyCsidh1024, PrivateKeyCsidh1792}` to easily
+create `PrivateKey` in a `const` context.
 
 ### Changed
 
