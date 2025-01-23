@@ -1,5 +1,5 @@
 use crypto_bigint::{
-    modular::{BernsteinYangInverter, ConstMontyForm, ConstMontyParams},
+    modular::{ConstMontyForm, ConstMontyParams, SafeGcdInverter},
     rand_core::CryptoRngCore,
     Odd, PrecomputeInverter, Uint,
 };
@@ -16,7 +16,7 @@ impl<const SAT_LIMBS: usize, MOD: ConstMontyParams<SAT_LIMBS>, const UNSAT_LIMBS
     SharedSecret<SAT_LIMBS, MOD>
 where
     Odd<Uint<SAT_LIMBS>>: PrecomputeInverter<
-        Inverter = BernsteinYangInverter<SAT_LIMBS, UNSAT_LIMBS>,
+        Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
         Output = Uint<SAT_LIMBS>,
     >,
 {
