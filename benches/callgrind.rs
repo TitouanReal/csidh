@@ -1,5 +1,5 @@
 use crypto_bigint::{
-    modular::{BernsteinYangInverter, ConstMontyParams},
+    modular::{ConstMontyParams, SafeGcdInverter},
     Odd, PrecomputeInverter, Uint,
 };
 use csidh::{CsidhParams, PrivateKey, PublicKey};
@@ -29,7 +29,7 @@ fn public_key_1<
     private_key: PrivateKey<SAT_LIMBS, N, MOD>,
 ) where
     Odd<Uint<SAT_LIMBS>>: PrecomputeInverter<
-        Inverter = BernsteinYangInverter<SAT_LIMBS, UNSAT_LIMBS>,
+        Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
         Output = Uint<SAT_LIMBS>,
     >,
 {
@@ -47,7 +47,7 @@ fn public_key_2<
     private_key: PrivateKey<SAT_LIMBS, N, MOD>,
 ) where
     Odd<Uint<SAT_LIMBS>>: PrecomputeInverter<
-        Inverter = BernsteinYangInverter<SAT_LIMBS, UNSAT_LIMBS>,
+        Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
         Output = Uint<SAT_LIMBS>,
     >,
 {
@@ -65,7 +65,7 @@ fn public_key_3<
     private_key: PrivateKey<SAT_LIMBS, N, MOD>,
 ) where
     Odd<Uint<SAT_LIMBS>>: PrecomputeInverter<
-        Inverter = BernsteinYangInverter<SAT_LIMBS, UNSAT_LIMBS>,
+        Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
         Output = Uint<SAT_LIMBS>,
     >,
 {

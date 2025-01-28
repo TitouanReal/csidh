@@ -1,7 +1,7 @@
 use core::ops::Mul;
 
 use crypto_bigint::{
-    modular::{BernsteinYangInverter, ConstMontyForm, ConstMontyParams},
+    modular::{ConstMontyForm, ConstMontyParams, SafeGcdInverter},
     ConstChoice, Odd, PrecomputeInverter, Uint,
 };
 
@@ -213,7 +213,7 @@ impl<
     > MontgomeryPoint<SAT_LIMBS, N, MOD>
 where
     Odd<Uint<SAT_LIMBS>>: PrecomputeInverter<
-        Inverter = BernsteinYangInverter<SAT_LIMBS, UNSAT_LIMBS>,
+        Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
         Output = Uint<SAT_LIMBS>,
     >,
 {

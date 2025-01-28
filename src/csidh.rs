@@ -1,5 +1,5 @@
 use crypto_bigint::{
-    modular::{BernsteinYangInverter, ConstMontyForm, ConstMontyParams},
+    modular::{ConstMontyForm, ConstMontyParams, SafeGcdInverter},
     rand_core::CryptoRngCore,
     Odd, PrecomputeInverter, Random, Uint,
 };
@@ -21,7 +21,7 @@ pub fn csidh<
 ) -> ConstMontyForm<MOD, SAT_LIMBS>
 where
     Odd<Uint<SAT_LIMBS>>: PrecomputeInverter<
-        Inverter = BernsteinYangInverter<SAT_LIMBS, UNSAT_LIMBS>,
+        Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
         Output = Uint<SAT_LIMBS>,
     >,
 {
