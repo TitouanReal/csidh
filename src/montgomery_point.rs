@@ -39,7 +39,7 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> Iterator
 
         if self.n_times_p.is_infinity() {
             self.n_times_p = self.p;
-            self.left = self.left - Uint::ONE;
+            self.left -= Uint::ONE;
             return Some(self.p);
         }
 
@@ -55,7 +55,7 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> Iterator
 
         self.n_minus_1_times_p = self.n_times_p;
         self.n_times_p = n_plus_1_times_p;
-        self.left = self.left - Uint::ONE;
+        self.left -= Uint::ONE;
         Some(n_plus_1_times_p)
     }
 }
