@@ -56,7 +56,7 @@ where
                 let m = {
                     let mut temp = Uint::ONE;
                     for (_, li) in s.clone().filter(|(j, _)| *j > i) {
-                        temp = temp * Uint::<SAT_LIMBS>::from(*li);
+                        temp *= Uint::<SAT_LIMBS>::from(*li);
                     }
                     temp
                 };
@@ -112,7 +112,7 @@ where
                     }
 
                     if path[i] == 0 && dummies[i] == 0 {
-                        k = k * Uint::<SAT_LIMBS>::from(*li);
+                        k *= Uint::<SAT_LIMBS>::from(*li);
                     }
                 }
             }
