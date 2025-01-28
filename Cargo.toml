@@ -19,7 +19,7 @@ features = ["rand_core"]
 
 [dev-dependencies]
 criterion = "0.5"
-iai-callgrind = "0.13"
+iai-callgrind = "0.14"
 rand = "0.8"
 
 [[bench]]
