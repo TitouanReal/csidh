@@ -1,4 +1,4 @@
-use crypto_bigint::{impl_modulus, modular::ConstMontyForm, Uint};
+use crypto_bigint::{Uint, impl_modulus, modular::ConstMontyForm};
 
 use super::CsidhParams;
 

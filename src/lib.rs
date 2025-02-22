@@ -60,9 +60,9 @@ mod public_key;
 mod shared_secret;
 
 #[doc(no_inline)]
-pub use crypto_bigint::{impl_modulus, modular::ConstMontyForm, Uint};
+pub use crypto_bigint::{Uint, impl_modulus, modular::ConstMontyForm};
 
 pub use csidh_params::CsidhParams;
-pub use private_key::{PrivateKey, PrivateKeyCsidh1024, PrivateKeyCsidh1792, PrivateKeyCsidh512};
+pub use private_key::{PrivateKey, PrivateKeyCsidh512, PrivateKeyCsidh1024, PrivateKeyCsidh1792};
 pub use public_key::PublicKey;
 pub use shared_secret::SharedSecret;

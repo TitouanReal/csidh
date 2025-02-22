@@ -1,7 +1,7 @@
 use crypto_bigint::{
+    Odd, PrecomputeInverter, Random, Uint,
     modular::{ConstMontyForm, ConstMontyParams, SafeGcdInverter},
     rand_core::CryptoRngCore,
-    Odd, PrecomputeInverter, Random, Uint,
 };
 
 use crate::{
@@ -21,9 +21,9 @@ pub fn csidh<
 ) -> ConstMontyForm<MOD, SAT_LIMBS>
 where
     Odd<Uint<SAT_LIMBS>>: PrecomputeInverter<
-        Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
-        Output = Uint<SAT_LIMBS>,
-    >,
+            Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
+            Output = Uint<SAT_LIMBS>,
+        >,
 {
     let lis = params.lis();
     let mut curve = MontgomeryCurve::new(params, start);

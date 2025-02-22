@@ -1,6 +1,6 @@
 use crypto_bigint::{
-    modular::{ConstMontyParams, SafeGcdInverter},
     Odd, PrecomputeInverter, Uint,
+    modular::{ConstMontyParams, SafeGcdInverter},
 };
 use csidh::{CsidhParams, PrivateKey, PublicKey};
 use iai_callgrind::{black_box, library_benchmark, library_benchmark_group, main};
@@ -29,9 +29,9 @@ fn public_key_1<
     private_key: PrivateKey<SAT_LIMBS, N, MOD>,
 ) where
     Odd<Uint<SAT_LIMBS>>: PrecomputeInverter<
-        Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
-        Output = Uint<SAT_LIMBS>,
-    >,
+            Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
+            Output = Uint<SAT_LIMBS>,
+        >,
 {
     let _ = PublicKey::from(black_box(private_key), &mut rand::thread_rng());
 }
@@ -47,9 +47,9 @@ fn public_key_2<
     private_key: PrivateKey<SAT_LIMBS, N, MOD>,
 ) where
     Odd<Uint<SAT_LIMBS>>: PrecomputeInverter<
-        Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
-        Output = Uint<SAT_LIMBS>,
-    >,
+            Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
+            Output = Uint<SAT_LIMBS>,
+        >,
 {
     let _ = PublicKey::from(black_box(private_key), &mut rand::thread_rng());
 }
@@ -65,9 +65,9 @@ fn public_key_3<
     private_key: PrivateKey<SAT_LIMBS, N, MOD>,
 ) where
     Odd<Uint<SAT_LIMBS>>: PrecomputeInverter<
-        Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
-        Output = Uint<SAT_LIMBS>,
-    >,
+            Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
+            Output = Uint<SAT_LIMBS>,
+        >,
 {
     let _ = PublicKey::from(black_box(private_key), &mut rand::thread_rng());
 }

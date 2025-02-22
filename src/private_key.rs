@@ -1,6 +1,6 @@
 use crypto_bigint::modular::ConstMontyParams;
 
-use crate::csidh_params::{csidh_1024, csidh_1792, csidh_512, CsidhParams};
+use crate::csidh_params::{CsidhParams, csidh_512, csidh_1024, csidh_1792};
 
 /// A private key for the CSIDH key exchange.
 #[derive(Clone, Copy, Debug)]

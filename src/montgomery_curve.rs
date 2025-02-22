@@ -1,10 +1,10 @@
 use crypto_bigint::{
+    Random, Uint,
     modular::{ConstMontyForm, ConstMontyParams},
     rand_core::CryptoRngCore,
-    Random, Uint,
 };
 
-use crate::{montgomery_point::MontgomeryPoint, CsidhParams};
+use crate::{CsidhParams, montgomery_point::MontgomeryPoint};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct MontgomeryCurve<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> {

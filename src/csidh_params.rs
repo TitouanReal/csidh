@@ -6,8 +6,8 @@ pub mod csidh_1792;
 pub mod csidh_512;
 
 use crypto_bigint::{
-    modular::{ConstMontyForm, ConstMontyParams},
     Uint,
+    modular::{ConstMontyForm, ConstMontyParams},
 };
 
 /// Parameters of the CSIDH key exchange.

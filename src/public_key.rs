@@ -1,7 +1,7 @@
 use crypto_bigint::{
+    Odd, PrecomputeInverter, Uint,
     modular::{ConstMontyForm, ConstMontyParams, SafeGcdInverter},
     rand_core::CryptoRngCore,
-    Odd, PrecomputeInverter, Uint,
 };
 
 use crate::{
@@ -19,9 +19,9 @@ impl<const SAT_LIMBS: usize, MOD: ConstMontyParams<SAT_LIMBS>, const UNSAT_LIMBS
     PublicKey<SAT_LIMBS, MOD>
 where
     Odd<Uint<SAT_LIMBS>>: PrecomputeInverter<
-        Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
-        Output = Uint<SAT_LIMBS>,
-    >,
+            Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
+            Output = Uint<SAT_LIMBS>,
+        >,
 {
     /// Computes the public key associated with the given private key.
     #[must_use]

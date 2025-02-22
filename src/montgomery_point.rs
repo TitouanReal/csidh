@@ -1,8 +1,8 @@
 use core::ops::Mul;
 
 use crypto_bigint::{
-    modular::{ConstMontyForm, ConstMontyParams, SafeGcdInverter},
     ConstChoice, Odd, PrecomputeInverter, Uint,
+    modular::{ConstMontyForm, ConstMontyParams, SafeGcdInverter},
 };
 
 use crate::montgomery_curve::MontgomeryCurve;
@@ -206,16 +206,16 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>
 }
 
 impl<
-        const SAT_LIMBS: usize,
-        const N: usize,
-        MOD: ConstMontyParams<SAT_LIMBS>,
-        const UNSAT_LIMBS: usize,
-    > MontgomeryPoint<SAT_LIMBS, N, MOD>
+    const SAT_LIMBS: usize,
+    const N: usize,
+    MOD: ConstMontyParams<SAT_LIMBS>,
+    const UNSAT_LIMBS: usize,
+> MontgomeryPoint<SAT_LIMBS, N, MOD>
 where
     Odd<Uint<SAT_LIMBS>>: PrecomputeInverter<
-        Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
-        Output = Uint<SAT_LIMBS>,
-    >,
+            Inverter = SafeGcdInverter<SAT_LIMBS, UNSAT_LIMBS>,
+            Output = Uint<SAT_LIMBS>,
+        >,
 {
     pub fn x(&self) -> ConstMontyForm<MOD, SAT_LIMBS> {
         self.X * self.Z.inv().unwrap()
@@ -261,7 +261,7 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> Mul<Uint<
 
 #[cfg(test)]
 mod tests {
-    use crate::{csidh_params::csidh_512, CsidhParams};
+    use crate::{CsidhParams, csidh_params::csidh_512};
 
     use super::*;
 
