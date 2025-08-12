@@ -4,7 +4,10 @@ use crypto_bigint::{
     rand_core::CryptoRngCore,
 };
 
-use crate::{csidh::csidh, private_key::PrivateKey, public_key::PublicKey};
+use crate::{
+    CsidhParams, csidh::csidh, montgomery_curve::MontgomeryCurve, private_key::PrivateKey,
+    public_key::PublicKey,
+};
 
 /// A shared secret created with the CSIDH key exchange.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -35,5 +38,25 @@ where
                 rng,
             ),
         }
+    }
+
+    /// Constructs a `SharedSecret` from the foreign shared secret, if the secret is valid.
+    #[must_use]
+    pub fn new<const N: usize>(
+        params: CsidhParams<SAT_LIMBS, N, MOD>,
+        shared_secret: Uint<SAT_LIMBS>,
+        rng: &mut impl CryptoRngCore,
+    ) -> Option<Self> {
+        let shared_secret = ConstMontyForm::new(&shared_secret);
+        if MontgomeryCurve::new(params, shared_secret).is_supersingular(rng) {
+            Some(Self { shared_secret })
+        } else {
+            None
+        }
+    }
+
+    ///Creates a foreign shared secret from this `SharedSecret`
+    pub fn to_repr(&self) -> Uint<SAT_LIMBS> {
+        return self.shared_secret.to_montgomery();
     }
 }

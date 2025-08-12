@@ -25,11 +25,12 @@ impl<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>> PrivateKe
         Self { params, key }
     }
 
-    pub(crate) const fn params(&self) -> CsidhParams<LIMBS, N, MOD> {
+    /// Obtains the parameters used by this`PrivateKey`
+    pub const fn params(&self) -> CsidhParams<LIMBS, N, MOD> {
         self.params
     }
-
-    pub(crate) const fn key(&self) -> [u32; N] {
+    ///Obtains the key material in this `PrivateKey`
+    pub const fn key(&self) -> [u32; N] {
         self.key
     }
 }
