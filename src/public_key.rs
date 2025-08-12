@@ -54,7 +54,7 @@ where
         }
     }
 
-    ///Creates a foeign public key from this `PublicKey`
+    ///Creates a foreign public key from this `PublicKey`
     pub fn to_repr(&self) -> Uint<SAT_LIMBS> {
         return self.key().to_montgomery();
     }
