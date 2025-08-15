@@ -22,7 +22,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     let mut rng = StdRng::from_rng(rand::thread_rng()).unwrap();
 
     for (i, private_key) in private_keys.into_iter().enumerate() {
-        group.bench_with_input(format!("{}", i), &private_key, |b, &private_key| {
+        group.bench_with_input(i.to_string(), &private_key, |b, &private_key| {
             b.iter(|| PublicKey::from(private_key, &mut rng))
         });
     }
