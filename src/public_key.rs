@@ -54,6 +54,11 @@ where
         }
     }
 
+    ///Creates a foreign public key from this `PublicKey`
+    pub fn to_repr(&self) -> Uint<SAT_LIMBS> {
+        return self.key().to_montgomery();
+    }
+
     pub(crate) const fn key(&self) -> ConstMontyForm<MOD, SAT_LIMBS> {
         self.key
     }
