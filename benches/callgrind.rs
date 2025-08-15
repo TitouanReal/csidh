@@ -1,9 +1,11 @@
+use std::hint::black_box;
+
 use crypto_bigint::{
     Odd, PrecomputeInverter, Uint,
     modular::{ConstMontyParams, SafeGcdInverter},
 };
 use csidh::{CsidhParams, PrivateKey, PublicKey};
-use iai_callgrind::{black_box, library_benchmark, library_benchmark_group, main};
+use iai_callgrind::{library_benchmark, library_benchmark_group, main};
 use rand::Rng;
 
 fn private_key<const LIMBS: usize, const N: usize, MOD: ConstMontyParams<LIMBS>>(
